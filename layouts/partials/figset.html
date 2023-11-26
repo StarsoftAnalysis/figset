@@ -10,6 +10,7 @@
     - put 'figrow true' in the figset partial's dict, otherwise the figcaptions get all narrow -- still don't know why exactly.
 
   TODO:
+  * refactor the image filtering
   ** Double check thinking re min 1 or 2 in srcset -- is the fallback src in addition to that?
   * option to clear before rather than after?
   * Use separate file for calcs??
@@ -44,6 +45,7 @@
   * FIXME: mx-auto for non-figrow centred image doesn't work. (e.g. test1)
   * caption alignment -- need to match figrow's justify?   or does figset have a justify too?
   * need left/center/right options for captions -- in figset  and margin:0 auto for image if centred
+  * add Hugo's unsharp mask: https://gohugo.io/functions/images/unsharpmask/
 
   This can be used from another template, with args passed in as a dict, e.g.
     {{- partial "figset.html" (dict "page" . "name" "thingy.jpg" "size" "medium" ) -}}
@@ -73,6 +75,7 @@
     .capclass -- classes for figcaption
     .id     -- id of this figset
     .debug -- true to output debug info as warnings
+    .unsharp -- true to apply unsharp filter; does not affect fall-back non-srcset image
 
 */}}
 
@@ -110,6 +113,7 @@
 {{- $id := .id -}}
 {{- $clear := .clear | default "none" -}}
 {{- $debug := .debug | default false -}}
+{{- $unsharp := .unsharp | default false -}}
 
 {{ if $debug }}{{ warnf "figset: i=%v p=%s s=%s t=%s c=%s u=%s a=%s g=%s l=%v sh=%t fr=%t" $image $position $size $title $caption $url $alt $gallery $lightbox $sameheight $figrow }}{{ end }}
 {{ if $debug }}{{ warnf "figset: .page=%s  name=%s image=%v\n" .page.Page $name $image }}{{ end }}
@@ -133,6 +137,7 @@
   {{- $imagemargincss := "" -}}
   {{- $sizes := "" -}}
   {{- $sizesString := "" -}}  
+  {{- $unsharpFilter := images.UnsharpMask 10.0 0.5 0.03 -}}
 
   {{- if eq (lower $url) "self" -}}
     {{/* Link to the image itself -- but limited by selfsize */}}
@@ -147,11 +152,19 @@
     {{- if gt $origsize $selfsize -}}
       {{- if eq $origsize $origwidth -}}
         {{- $linkedimage = $image.Resize (printf "%dx jpg" $selfsize) -}}
+        {{- if $unsharp -}}
+          {{- $linkedimage = $linkedimage.Filter ($unsharpFilter) -}}
+          {{- warnf "unsharped 1 %s" $image -}}
+        {{- end -}}
         {{- if $debug -}}
           {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
         {{- end -}}
       {{- else -}}
         {{- $linkedimage = $image.Resize (printf "x%d jpg" $selfsize) -}}
+        {{- if $unsharp -}}
+          {{- $linkedimage = $linkedimage.Filter ($unsharpFilter) -}}
+          {{- warnf "unsharped 2 %s" $image -}}
+        {{- end -}}
         {{- if $debug -}}
           {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
         {{- end -}}
@@ -279,6 +292,10 @@
       {{ $defaultwidth = $origwidth }}
     {{ else }}
       {{- $newimage := $image.Resize (printf "%dx jpg" $maxwidth) -}}
+      {{- if $unsharp -}}
+        {{- $newimage = $newimage.Filter ($unsharpFilter) -}}
+          {{- warnf "unsharped 3 %s" $image -}}
+      {{- end -}}
       {{- if $debug -}}
         {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
       {{- end -}}
@@ -290,6 +307,10 @@
       {{- if and (le $w $maxwidth) (ne $w $defaultwidth) -}}
         {{ if $debug }}{{ warnf "figset: maxwidth=%v w=%v appending after resize %dx" $maxwidth $w $w }}{{ end }}
         {{- $newimage := $image.Resize (printf "%dx jpg" $w) -}}
+        {{- if $unsharp -}}
+          {{- $newimage = $newimage.Filter ($unsharpFilter) -}}
+          {{- warnf "unsharped 4 %s" $image -}}
+        {{- end -}}
         {{- if $debug -}}
           {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
         {{- end -}}

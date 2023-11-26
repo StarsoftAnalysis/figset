@@ -15,4 +15,4 @@ future="--buildFuture"
 draft="--buildDrafts"
 clean="--cleanDestinationDir"
 
-$hugo server --baseURL="$ip/" --port=$port --bind=$ip -c $content --renderToDisk -d $dest --disableFastRender --watch $future $draft --verbose --noHTTPCache $clean "$@"
+$hugo server --baseURL="$ip/" --port=$port --bind=$ip -c $content --renderToDisk -d $dest --disableFastRender --watch $future $draft --logLevel info --noHTTPCache $clean "$@"
