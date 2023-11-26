@@ -1,16 +1,12 @@
 #!/bin/bash
 
-#ip=192.168.1.7
-ip=localhost
-ip=192.168.1.63
-ip=192.168.1.58
-#ip=192.168.158.110
+#ip=localhost
 # just want the first IP -- don't know why using () does the trick
-ips=(`~/utils/netlist --4 --scope=global`)
+#ip=(`~/utils/netlist --4 --scope=global`)
+ip=192.168.1.44
 
-port=1314
+port=1316
 dest=served
-hugo="/home/chris/dev/hugo-summary-fix-2/hugo"
 hugo="hugo"
 content="./content"
 baseurl="$ip:$port"
