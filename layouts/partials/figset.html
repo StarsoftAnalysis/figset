@@ -77,7 +77,7 @@
     .capclass   -- classes for figcaption
     .id         -- id of this figset
     .debug      -- true to output debug info as warnings
-    .unsharp    -- true to apply unsharp filter; does not affect fall-back non-srcset image
+    .sharpen    -- true to apply unsharp mask filter; does not affect fall-back non-srcset image
 
 */}}
 
@@ -115,7 +115,7 @@
 {{- $id := .id -}}
 {{- $clear := .clear | default site.Params.figset.clear | default "none" -}}
 {{- $debug := .debug | default site.Params.figset.debug | default false -}}
-{{- $unsharp := .unsharp | default .site.Params.figset.unsharp | default false -}}
+{{- $sharpen := .sharpen | default .site.Params.figset.sharpen | default false -}}
 
 {{ if $debug }}{{ warnf "figset: i=%v p=%s s=%s t=%s c=%s u=%s a=%s g=%s l=%v sh=%t fr=%t" $image $position $size $title $caption $url $alt $gallery $lightbox $sameheight $figrow }}{{ end }}
 {{ if $debug }}{{ warnf "figset: .page=%s  name=%s image=%v\n" .page.Page $name $image }}{{ end }}
@@ -139,7 +139,7 @@
   {{- $imagemargincss := "" -}}
   {{- $sizes := "" -}}
   {{- $sizesString := "" -}}  
-  {{- $unsharpFilter := images.UnsharpMask 10.0 0.5 0.03 -}}
+  {{- $unsharpMaskFilter := images.UnsharpMask 10.0 0.5 0.03 -}}
 
   {{- if eq (lower $url) "self" -}}
     {{/* Link to the image itself -- but limited by selfsize */}}
@@ -154,18 +154,18 @@
     {{- if gt $origsize $selfsize -}}
       {{- if eq $origsize $origwidth -}}
         {{- $linkedimage = $image.Resize (printf "%dx jpg" $selfsize) -}}
-        {{- if $unsharp -}}
-          {{- $linkedimage = $linkedimage.Filter ($unsharpFilter) -}}
-          {{- warnf "unsharped 1 %s" $image -}}
+        {{- if $sharpen -}}
+          {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
+          {{- warnf "sharpened 1 %s" $image -}}
         {{- end -}}
         {{- if $debug -}}
           {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
         {{- end -}}
       {{- else -}}
         {{- $linkedimage = $image.Resize (printf "x%d jpg" $selfsize) -}}
-        {{- if $unsharp -}}
-          {{- $linkedimage = $linkedimage.Filter ($unsharpFilter) -}}
-          {{- warnf "unsharped 2 %s" $image -}}
+        {{- if $sharpen -}}
+          {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
+          {{- warnf "sharpened 2 %s" $image -}}
         {{- end -}}
         {{- if $debug -}}
           {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
@@ -288,9 +288,9 @@
       {{ $defaultwidth = $origwidth }}
     {{ else }}
       {{- $newimage := $image.Resize (printf "%dx jpg" $maxwidth) -}}
-      {{- if $unsharp -}}
-        {{- $newimage = $newimage.Filter ($unsharpFilter) -}}
-          {{- warnf "unsharped 3 %s" $image -}}
+      {{- if $sharpen -}}
+        {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
+          {{- warnf "sharpened 3 %s" $image -}}
       {{- end -}}
       {{- if $debug -}}
         {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
@@ -303,9 +303,9 @@
       {{- if and (le $w $maxwidth) (ne $w $defaultwidth) -}}
         {{ if $debug }}{{ warnf "figset: maxwidth=%v w=%v appending after resize %dx" $maxwidth $w $w }}{{ end }}
         {{- $newimage := $image.Resize (printf "%dx jpg" $w) -}}
-        {{- if $unsharp -}}
-          {{- $newimage = $newimage.Filter ($unsharpFilter) -}}
-          {{- warnf "unsharped 4 %s" $image -}}
+        {{- if $sharpen -}}
+          {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
+          {{- warnf "sharpened 4 %s" $image -}}
         {{- end -}}
         {{- if $debug -}}
           {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}

@@ -28,7 +28,7 @@
     figsetclass - from figrow
     align - simplified values for use as align-self  
     debug - set true to output debug information as warnings
-    unsharp - set true to apply an unsharp mask filter
+    sharpen - set true to apply an unsharp mask filter
 
   e.g.  {{< figset name="barnowl.jpg" caption="Owl on a post" alt="photo" >}}
 
@@ -65,7 +65,7 @@
 {{ $id       := .Get "id" }}
 {{ $clear    := .Get "clear" }}
 {{ $debug    := .Get "debug" | default ($p.Get "debug") }}
-{{ $unsharp  := .Get "unsharp" | default ($p.Get "unsharp") }}
+{{ $sharpen  := .Get "sharpen" | default ($p.Get "sharpen") }}
 
-{{ partial "figset.html" (dict "site" .Site  "page" .Page   "name" $name  "position" $position  "size" $size  "sameheight" $sameheight  "maxwidth" $maxwidth  "selfsize" $selfsize  "title" $title  "caption" $caption  "capclass" $capclass  "alt" $alt  "url" $url  "gallery" $gallery  "lightbox" $lightbox  "align" $align  "class1" $class1  "class2" $class2  "id" $id  "clear" $clear  "figrow" $figrow  "debug" $debug  "unsharp" $unsharp) }}
+{{ partial "figset.html" (dict "site" .Site  "page" .Page   "name" $name  "position" $position  "size" $size  "sameheight" $sameheight  "maxwidth" $maxwidth  "selfsize" $selfsize  "title" $title  "caption" $caption  "capclass" $capclass  "alt" $alt  "url" $url  "gallery" $gallery  "lightbox" $lightbox  "align" $align  "class1" $class1  "class2" $class2  "id" $id  "clear" $clear  "figrow" $figrow  "debug" $debug  "sharpen" $sharpen) }}
 
