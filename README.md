@@ -4,9 +4,9 @@ Developing figset a bit more carefully, in this minimal site.
 
 ## To do
 
-* either use bootstrap consistently, or not at all -- i.e. remove the dependency.  bs is good for sizing etc.(?)
+* DONE? either use bootstrap consistently, or not at all -- i.e. remove the dependency.  bs is good for sizing etc.(?)
 * lightboxSSA needs images in assets|static/images -- can that be fixed? 
-* 
+* add site-wide options e.g. for unsharp 
 
 ### Stages
 

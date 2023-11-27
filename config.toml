@@ -39,10 +39,9 @@ summaryExclusions = ["figcaption", "input"]	# , "h4", "h6", "h3"]
 
 [params]
   title = "Figset Dev"
-  #sitename = "Avon Valley Shed"
-  favicon = '/images/avs-logo-64.png'
-  siteimagealt = "logo"
   sitecolour = "#e1d3b8"
+  [params.figset]
+    unsharp = true
 
 [markup]
   [markup.goldmark]

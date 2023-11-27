@@ -55,27 +55,28 @@
   The figset shortcode can get all options from a figrow parent (if any).
 
   args (in the dict/context):
-    .page -- current page
-    .figrow -- true if we're within a figrow (which is independent of whether there's a gallery)
-    .name (of image within the page bundle)
-    .image (resource) -- image overrides name
-    .position - left/start, right/end, centre/center -- can be abbreviated.
-    .size - thumb, small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
-    .maxwidth -- biggest size used for srcset in pixels, or for url=self
-    .selfsize -- max size in px of url=self image
-    .title -- shows as tool-tip
-    .caption -- forms the figcaption
-    .alt -- alt text for img, defaults to title or caption
-    .url -- url to link to -- on second click if galleried, or 'self'
-    .gallery - name of gallery -- just has to be the same on a group of figures to make them a gallery - implies lightbox
-    .lightbox - anything truthy to add lightbox effect without making it a gallery
-    .sameheight - true to make all images with the same .size value the same height 
-    .class1 -- classes from parent figrow
-    .class2 -- classes for this figset
-    .capclass -- classes for figcaption
-    .id     -- id of this figset
-    .debug -- true to output debug info as warnings
-    .unsharp -- true to apply unsharp filter; does not affect fall-back non-srcset image
+    .site       -- site
+    .page       -- current page
+    .figrow     -- true if we're within a figrow (which is independent of whether there's a gallery)
+    .name       -- (of image within the page bundle)
+    .image      -- (resource) -- image overrides name
+    .position   -- left/start, right/end, centre/center -- can be abbreviated.
+    .size       -- thumb, small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
+    .maxwidth   -- biggest size used for srcset in pixels, or for url=self
+    .selfsize   -- max size in px of url=self image
+    .title      -- shows as tool-tip
+    .caption    -- forms the figcaption
+    .alt        -- alt text for img, defaults to title or caption
+    .url        -- url to link to -- on second click if galleried, or 'self'
+    .gallery    -- name of gallery -- just has to be the same on a group of figures to make them a gallery - implies lightbox
+    .lightbox   -- anything truthy to add lightbox effect without making it a gallery
+    .sameheight -- true to make all images with the same .size value the same height 
+    .class1     -- classes from parent figrow
+    .class2     -- classes for this figset
+    .capclass   -- classes for figcaption
+    .id         -- id of this figset
+    .debug      -- true to output debug info as warnings
+    .unsharp    -- true to apply unsharp filter; does not affect fall-back non-srcset image
 
 */}}
 
@@ -113,7 +114,7 @@
 {{- $id := .id -}}
 {{- $clear := .clear | default "none" -}}
 {{- $debug := .debug | default false -}}
-{{- $unsharp := .unsharp | default false -}}
+{{- $unsharp := .unsharp | default .site.Params.figset.unsharp | default false -}}
 
 {{ if $debug }}{{ warnf "figset: i=%v p=%s s=%s t=%s c=%s u=%s a=%s g=%s l=%v sh=%t fr=%t" $image $position $size $title $caption $url $alt $gallery $lightbox $sameheight $figrow }}{{ end }}
 {{ if $debug }}{{ warnf "figset: .page=%s  name=%s image=%v\n" .page.Page $name $image }}{{ end }}

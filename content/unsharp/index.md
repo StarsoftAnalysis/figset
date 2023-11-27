@@ -11,3 +11,4 @@ LightboxSSA:
   {{<figset name="twigs.png" gallery=x caption="Unsharp" size=large unsharp=true debug=true >}}
   {{<figset name="twigs.png" gallery=x caption="Normal" size=small unsharp=false debug=true >}}
   {{<figset name="twigs.png" gallery=x caption="Unsharp" size=small unsharp=true debug=true >}}
+  {{<figset name="twigs.png" gallery=x caption="Default" size=small              debug=true >}}
