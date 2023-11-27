@@ -41,7 +41,11 @@ summaryExclusions = ["figcaption", "input"]	# , "h4", "h6", "h3"]
   title = "Figset Dev"
   sitecolour = "#e1d3b8"
   [params.figset]
+    size = "small"
     unsharp = true
+    align = "start"
+    position = "top"
+    sameheight = true
 
 [markup]
   [markup.goldmark]

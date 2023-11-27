@@ -46,6 +46,7 @@
   * caption alignment -- need to match figrow's justify?   or does figset have a justify too?
   * need left/center/right options for captions -- in figset  and margin:0 auto for image if centred
   * add Hugo's unsharp mask: https://gohugo.io/functions/images/unsharpmask/
+  * get defaults from config file
 
   This can be used from another template, with args passed in as a dict, e.g.
     {{- partial "figset.html" (dict "page" . "name" "thingy.jpg" "size" "medium" ) -}}
@@ -96,24 +97,24 @@
 {{ end }}
 
 {{/* carry on with parameters and defaults */}}
-{{- $position := lower .position -}}{{/* See below for default */}}
-{{- $size := lower .size | default "medium" -}}
-{{- $selfsize := (int (.selfsize | default 2000)) -}}
-{{- $title := .title | default "" }}
-{{- $caption := .caption | default "" -}}
-{{- $url := .url | default "" -}}  {{/* $image.Params.Url | default "" -}}{{/* FIXME is this right? will make the link go to the orig image? Need to test if $image is set */}}
-{{- $alt := .alt | default $caption | default $title | default "image" -}}
-{{- $maxwidth := int (.maxwidth | default 800) -}}
-{{- $gallery := .gallery | default "" }}
-{{- $lightbox := .lightbox | default $gallery -}}{{- /* lightbox is true if any gallery name supplied */ -}}
-{{- $sameheight := .sameheight | default false -}}
-{{- $align := lower .align }}{{/* See below for default */}}
-{{- $class1 := .class1 -}}
-{{- $class2 := .class2 -}}
-{{- $capclass := .capclass -}}
+{{- $position := lower (.position | default .site.Params.figset.position) | default "" -}}
+{{- $size := lower .size | default .site.Params.figset.size | default "medium" -}}
+{{- $selfsize := (int (.selfsize | default .site.Params.figset.selfsize | default 2000)) -}}
+{{- $title := .title | default site.Params.figset.title | default "" -}}
+{{- $caption := .caption | default site.Params.figset.caption  | default "" -}}
+{{- $url := .url | default site.Params.figset.url | default "" -}}  {{- /* $image.Params.Url | default "" */ -}}{{- /* FIXME is this right? will make the link go to the orig image? Need to test if $image is set */ -}}
+{{- $alt := .alt | default $caption | default $title | default .site.Params.figset.alt | default "image" -}}
+{{- $maxwidth := int (.maxwidth | default site.Params.figset.maxwidth | default 800) -}}
+{{- $gallery := .gallery | default site.Params.figset.gallery | default "" }}
+{{- $lightbox := .lightbox | default site.Params.figset.lightbox | default $gallery -}}{{- /* lightbox is true if any gallery name supplied */ -}}
+{{- $sameheight := .sameheight | default site.Params.figset.sameheight | default false -}}
+{{- $align := lower (.align | default site.Params.figset.align) -}}{{/* See below for default */}}
+{{- $class1 := .class1 | default site.Params.figset.class1 -}}
+{{- $class2 := .class2 | default site.Params.figset.class2 -}}
+{{- $capclass := .capclass | default site.Params.figset.capclass -}}
 {{- $id := .id -}}
-{{- $clear := .clear | default "none" -}}
-{{- $debug := .debug | default false -}}
+{{- $clear := .clear | default site.Params.figset.clear | default "none" -}}
+{{- $debug := .debug | default site.Params.figset.debug | default false -}}
 {{- $unsharp := .unsharp | default .site.Params.figset.unsharp | default false -}}
 
 {{ if $debug }}{{ warnf "figset: i=%v p=%s s=%s t=%s c=%s u=%s a=%s g=%s l=%v sh=%t fr=%t" $image $position $size $title $caption $url $alt $gallery $lightbox $sameheight $figrow }}{{ end }}
@@ -174,24 +175,18 @@
     {{- $url = $linkedimage.RelPermalink -}}
   {{- end -}}
 
-  {{/* Position is ignored within a figrow */}}
+  {{/* Position is silently ignored within a figrow */}}
   {{- $posclass := "" -}}
-  {{ if $figrow }}
-    {{ if $position }}
-      {{ warnf "figset: position ignored within figrow for image %v" $image }}
-    {{- end -}}
-  {{ else }}
-    {{/* position: left/start | right/end | centre/center -- can be abbreviated. */}}
-    {{- if or (hasPrefix "left" $position) (hasPrefix "start" $position) -}}
-      {{- $posclass = "figset-posstart" -}}
-    {{- else if or (hasPrefix "right" $position) (hasPrefix "end" $position) -}}
-      {{- $posclass = "figset-posend" -}}
-    {{- else if or (hasPrefix "centre" $position) (hasPrefix "center" $position) -}}
-      {{- $posclass = "figset-poscenter" -}}
-    {{- else -}}
-      {{- warnf "figset: invalid position '%s' for image %v -- using 'centre'" $position $image -}}
-      {{- $posclass = "figset-poscenter" -}}
-    {{- end -}}
+  {{/* position: left/start | right/end | centre/center -- can be abbreviated. */}}
+  {{- if or (hasPrefix "left" $position) (hasPrefix "start" $position) -}}
+    {{- $posclass = "figset-posstart" -}}
+  {{- else if or (hasPrefix "right" $position) (hasPrefix "end" $position) -}}
+    {{- $posclass = "figset-posend" -}}
+  {{- else if or (hasPrefix "centre" $position) (hasPrefix "center" $position) -}}
+    {{- $posclass = "figset-poscenter" -}}
+  {{- else -}}
+    {{- warnf "figset: invalid position '%s' for image %v -- using 'centre'" $position $image -}}
+    {{- $posclass = "figset-poscenter" -}}
   {{- end -}}
 
   {{/* align-self: only within a figrow */}}

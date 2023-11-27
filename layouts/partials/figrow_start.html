@@ -1,4 +1,4 @@
-{{/*
+{{- /*
 
   figrow partial
 
@@ -28,7 +28,7 @@
     {{ partial "figset.html"       (dict  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image2.jpg"  "caption" "another photo"  ...) }}
     {{ partial "figrow_end.html"   (dict  "page" .Page) }}
 
-*/}}
+*/ -}}
 
 {{- $dftj := "center" -}}
 {{- $justify := lower .justify | default $dftj -}}
@@ -65,7 +65,7 @@
   {{- $jcclass = "figrow-jccenter" -}}
 {{- end -}}
 
-{{ if $debug }}{{ warnf "figrow: justify=%s id=%s class=%s" $justify $id $class }}{{ end }}
+{{- if $debug -}}{{- warnf "figrow: justify=%s id=%s class=%s" $justify $id $class -}}{{- end -}}
 <div {{ with $id }}id="{{ . }}"{{ end }} class="figrow {{ $jcclass }} {{ $class }}">
 
-{{/* The end of the div is in partials/figrow_end.html */}}
+{{- /* The end of the div is in partials/figrow_end.html */ -}}

@@ -24,7 +24,7 @@
 
 {{- /* We DON'T need to deal with parameters used by figset via its .Parent -- the shortcode mechanism handles that automatically. */ -}}
 
-{{- partial "figrow_start.html" (dict  "page" .Page  "figrow" true  "justify" $justify  "id" $id  "class" $class  "figsetclass" $figsetclass  "debug" $debug) -}}
+{{- partial "figrow_start.html" (dict  "site" .Site  "page" .Page  "figrow" true  "justify" $justify  "id" $id  "class" $class  "figsetclass" $figsetclass  "debug" $debug) -}}
   {{- with .Inner }}{{ . }}{{- end -}}
-{{- partial "figrow_end.html"   (dict  "page" .Page  "clear" $clear  "debug" $debug) -}}
+{{- partial "figrow_end.html"   (dict  "site" .Site  "page" .Page  "clear" $clear  "debug" $debug) -}}
 
