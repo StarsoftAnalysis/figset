@@ -30,8 +30,11 @@ timeout = "5m"
 summaryLength = 70
 summaryExclusions = ["figcaption", "input"]	# , "h4", "h6", "h3"]
 
-
-#[module]
+# These are the bits that modules using this one will get:
+[module]
+[[module.mounts]]
+    source = "assets/sass/figset.scss"
+    target = "assets/sass/figset.scss"
 #[[module.imports]]
   # Not yet...
   #path = 'github.com/starsoftanalysis/hugo-responsive-images-ssa'
