@@ -1,5 +1,0 @@
-{{/* shortcodes/addressblock.html -- address block creator */}}
-{{ $inner := trim .Inner " \t\n" }}
-<address class=addressblock>
-  <p>{{ replace $inner "\n" "<p>" | safeHTML }}
-</address>
