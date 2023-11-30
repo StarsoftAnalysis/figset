@@ -155,7 +155,7 @@
         {{- $linkedimage = $image.Resize (printf "%dx jpg" $selfsize) -}}
         {{- if $sharpen -}}
           {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
-          {{- warnf "sharpened 1 %s" $image -}}
+          {{- /* warnf "sharpened 1 %s" $image */ -}}
         {{- end -}}
         {{- if $debug -}}
           {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
@@ -164,7 +164,7 @@
         {{- $linkedimage = $image.Resize (printf "x%d jpg" $selfsize) -}}
         {{- if $sharpen -}}
           {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
-          {{- warnf "sharpened 2 %s" $image -}}
+          {{- /* warnf "sharpened 2 %s" $image */ -}}
         {{- end -}}
         {{- if $debug -}}
           {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
@@ -290,7 +290,7 @@
       {{- $newimage := $image.Resize (printf "%dx jpg" $maxwidth) -}}
       {{- if $sharpen -}}
         {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
-          {{- warnf "sharpened 3 %s" $image -}}
+        {{- /* warnf "sharpened 3 %s" $image */ -}}
       {{- end -}}
       {{- if $debug -}}
         {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
@@ -305,7 +305,7 @@
         {{- $newimage := $image.Resize (printf "%dx jpg" $w) -}}
         {{- if $sharpen -}}
           {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
-          {{- warnf "sharpened 4 %s" $image -}}
+          {{- /* warnf "sharpened 4 %s" $image */ -}}
         {{- end -}}
         {{- if $debug -}}
           {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
