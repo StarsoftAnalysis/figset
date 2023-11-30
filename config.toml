@@ -31,20 +31,15 @@
 #summaryExclusions = ["figcaption", "input"]	# , "h4", "h6", "h3"]
 
 # These are the bits that modules using this one will get:
-[module]
 [module.hugoVersion]
 # Need at least 64 for ?  and extended for SASS
 min = "0.64.0"
 extended = true
 
-[module.mounts]
-    # FIXME why does it work when I've only done this much -- perhaps things in the same place are automatic
-    source = "assets/sass/figset.scss"
-    target = "assets/sass/figset.scss"
-#[[module.imports]]
-  # Not yet...
-  #path = 'github.com/starsoftanalysis/hugo-responsive-images-ssa'
-  #path = 'github.com/danielfdickinson/hugo-debug-tables'
+# FIXME why does it work when I've only done this much -- perhaps things in the same place are automatic
+#[[module.mounts]]
+#    source = "assets/sass/figset.scss"
+#    target = "assets/sass/figset.scss"
 
 #[params]
 #  title = "Figset Dev"
