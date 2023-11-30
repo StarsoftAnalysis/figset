@@ -7,10 +7,11 @@
 min = "0.64.0"
 extended = true
 
-[[module.mounts]]
-    # FIXME why does it work when I've only done this much -- perhaps things in the same place are automatic
-    source = "assets/sass/figset.scss"
-    target = "assets/sass/figset.scss"
+#[[module.mounts]]
+#    # FIXME why does it work when I've only done this much -- perhaps things in the same place are automatic
+#    ## I don't need them unless moving to a different place
+#    source = "assets/sass/figset.scss"
+#    target = "assets/sass/figset.scss"
 
 
 # ?? TODO can we set default imaging things here?
