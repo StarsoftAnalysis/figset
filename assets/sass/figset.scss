@@ -9,7 +9,7 @@ div.figrow {
 }
 
 figure.figset {
-  margin: 0 2vw 2vw; // maybe should be 0 on narrow screens
+  margin: 0 1em 0.5em;
   width: fit-content;
   //? gets overridden within a row    display: inline-table;
   display: table;
