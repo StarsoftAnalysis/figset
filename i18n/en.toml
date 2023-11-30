@@ -1,3 +1,0 @@
-# See https://discourse.gohugo.io/t/monolingual-site-getting-no-translation-bundle-warnings/6300/3
-[wordCount]
-other = "{{ .WordCount }} words"

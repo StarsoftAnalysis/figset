@@ -1,14 +1,2 @@
-/resources/
-/public*
-/served*
-/deployment.log
-/hugo_stats.json
-package-lock.json
-*.deleted
 *~
-
-
-assets/lib
 push
-push.sh.old
-serve.sh

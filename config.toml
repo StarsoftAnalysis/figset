@@ -1,34 +1,4 @@
-## Leave baseURL empty for relative urls?
-## see https://gohugo.io/content-management/urls/
-## Proper value is added in serve/deploy script
-#baseURL = ""
-##? relativeURLs = true
-##? uglyURLs = true
-#canonifyURLs = false
-#
-#title = "Figset Dev"
-#
-## Note SEO-type additions from https://www.skcript.com/svr/perfect-seo-meta-tags-with-hugo/
-#enableEmoji = false
-#enableGitInfo = false
-#enableRobotsTXT = true
-#languageCode = "en-GB"
-#DefaultContentLanguage = "en"
-#
-#paginate = 9
-#
-## See https://github.com/gohugoio/hugo/issues/6859
-###disableKinds = ['taxonomyTerm']
-#
-## See https://github.com/gohugoio/hugo/issues/4841
-#timeout = "5m"
-#
-#  # see https://gohugo.io/functions/where/#mainsections
-#  #mainSections = ["plots"]
-#  #
-#
-#summaryLength = 70
-#summaryExclusions = ["figcaption", "input"]	# , "h4", "h6", "h3"]
+# config.toml for figset module
 
 # These are the bits that modules using this one will get:
 [module.hugoVersion]
@@ -41,37 +11,7 @@ extended = true
 #    source = "assets/sass/figset.scss"
 #    target = "assets/sass/figset.scss"
 
-#[params]
-#  title = "Figset Dev"
-#  sitecolour = "#e1d3b8"
-#  [params.figset]
-#    size = "small"
-#    sharpen = true
-#    align = "start"
-#    position = "top"
-#    sameheight = true
-#
-#[markup]
-#  [markup.goldmark]
-#    [markup.goldmark.extensions]
-#      definitionList = true
-#      footnote = true
-#      linkify = true
-#      strikethrough = true
-#      table = true
-#      taskList = true
-#      typographer = true
-#    [markup.goldmark.parser]
-#      attribute = true
-#      autoHeadingID = true
-#      #? autoHeadingIDType = "github"
-#    [markup.goldmark.renderer]
-#      hardWraps = false
-#      unsafe = true     # temp
-#      xHTML = false
-#
-
-# ?? FIXME can we set default imaging things here?
+# ?? TODO can we set default imaging things here?
 [imaging]
   # Default resample filter used for resizing. Default is Box,
   # a simple and fast averaging filter appropriate for downscaling.
