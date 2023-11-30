@@ -1,9 +1,10 @@
-{{/*
+{{- /*
   figset_imagesize.html
 
   This is a partial that calculate image size information for figset.html
 
-  Screen widths are chosen to fit those used by Bootstrap 5.
+  Screen widths are chosen to fit those used by Bootstrap 5, although 
+  figset does not rely on using Bootstrap.
 
   Inputs:
 
@@ -17,74 +18,75 @@
     .imagelist
     .sizestring
 
-*/}}
+*/ -}}
 
-{{ warnf "fsi: image=%v size=%v aspect=%v/%T maxwidth=%v" .image .size .aspect .aspect .maxwidth }}
+{{- /* warnf "fsi: image=%v size=%v aspect=%v/%T maxwidth=%v" .image .size .aspect .aspect .maxwidth */ -}}
 
-    {{/* TODO need this for size2 too, so make it a function, ie a partial that returns stuff */}}
-    {{/* 
-      Based on a 'typical' 1.4:1 image, these fit across screen sizes 
-      as defined in the $idealWXxx slices below (in vw aka % units)
-      (bearing in mind that the available width is not the whole screen width)
-      
-      The area A of each ideal image in term of aspect ratio (w/h) R is width*height or width-squared/R
+{{- /* TODO need this for size2 too, so make it a function, ie a partial that returns stuff */ -}}
+{{- /* 
+  Based on a 'typical' 1.4:1 image, these fit across screen sizes 
+  as defined in the $idealWXxx slices below (in vw aka % units)
+  (bearing in mind that the available width is not the whole screen width)
+  
+  The area A of each ideal image in term of aspect ratio (w/h) R is width*height or width-squared/R
 
-      Each real image, with aspect ratio R', should have the same area, so its height is sqrt(A/R')
-      and its width is its height*R'
-    */}}
-    {{/*       screen width:  1200+ 992+ 768+ 576+ else */}}
-    {{ $idealWThumb  := slice   10   12   15   25   45 }}
-    {{ $idealWSmall  := slice   25   25   30   45  100 }}
-    {{ $idealWMedium := slice   33   40   50   80  100 }}
-    {{ $idealWLarge  := slice   50   60   80  100  100 }}
-    {{ $idealWFull   := slice  100  100  100  100  100 }}
+  Each real image, with aspect ratio R', should have the same area, so its height is sqrt(A/R')
+  and its width is its height*R'
+*/ -}}
 
-    {{ $idealW := $idealWMedium }}{{/* used if none of the strings match */}}
-    {{ if hasPrefix .size "t" }}
-      {{ $idealW = $idealWThumb }}
-    {{ else if hasPrefix .size "s" }}
-      {{ $idealW = $idealWSmall }}
-    {{ else if hasPrefix .size "m" }}
-      {{ $idealW = $idealWMedium }}
-    {{ else if hasPrefix .size "l" }}
-      {{ $idealW = $idealWLarge }}
-    {{ else if hasPrefix .size "f" }}
-      {{ $idealW = $idealWFull }}
-    {{ else }}
-      {{ warnf "figset_imagesize: invalid value for size '%s' -- using 'medium' instead." .size }}
-    {{ end }}
+{{- /*     screen width:  1200+ 992+ 768+ 576+ else */ -}}
+{{- $idealWThumb  := slice   10   12   15   25   45 -}}
+{{- $idealWSmall  := slice   25   25   30   45  100 -}}
+{{- $idealWMedium := slice   33   40   50   80  100 -}}
+{{- $idealWLarge  := slice   50   60   80  100  100 -}}
+{{- $idealWFull   := slice  100  100  100  100  100 -}}
 
-    {{/* Just a big list, in descending order (so that default size is first, and so that JS (i.e. lightboxSSA) can handle the list easily) */}} 
-    {{- $allwidths := slice 1800 1600 1400 1200 1000 800 600 400 200 -}}
-    {{- $maxwidth := (int (.maxwidth | default 2000)) -}}
+{{- $idealW := $idealWMedium -}}{{- /* used if none of the strings match */ -}}
+{{ if hasPrefix .size "t" -}}
+  {{- $idealW = $idealWThumb -}}
+{{- else if hasPrefix .size "s" -}}
+  {{- $idealW = $idealWSmall -}}
+{{- else if hasPrefix .size "m" -}}
+  {{- $idealW = $idealWMedium -}}
+{{- else if hasPrefix .size "l" -}}
+  {{- $idealW = $idealWLarge -}}
+{{- else if hasPrefix .size "f" -}}
+  {{- $idealW = $idealWFull -}}
+{{- else -}}
+  {{- warnf "figset_imagesize: invalid value for size '%s' -- using 'medium' instead." .size -}}
+{{- end -}}
 
-    {{/* now only one set of calcs required */}}
-    {{ $idealAspect  := 1.4 }}
-    {{ $areas := slice }}
-    {{ $widths := slice }}
-    {{ range $w := $idealW }}
-      {{ $areas = $areas | append (int (math.Round (div (mul $w $w) $idealAspect))) }}
-      {{ $area := div (mul $w $w) $idealAspect }}
-      {{ warnf "** w=%v/%T iA=%v/%T a=%v/%T" $w $w $idealAspect $idealAspect $area $area }}
-      {{/* NOTE use of $. to access fields in outer scope (because . is different within a range) */}}
-      {{ $y := math.Sqrt (div $area $.aspect) }}
-      {{ warnf "fsi:  image=%v  area=%v y=%v $.aspect=%v pya=%v mrm=%v m100m=%v inthat=%v\n" $.image $area $y $.aspect (mul $y $.aspect)  (math.Round (mul $y $.aspect)) (math.Min 100 (math.Round (mul $y $.aspect)))  (int (math.Min 100 (math.Round (mul $y $.aspect)))) }}
-      {{ $widths = $widths | append (int (math.Min 100 (math.Round (mul $y $.aspect)))) }}
-    {{ end }}
-    {{/* warnf "fs:  image=%v .size=%v $size=%v idealW=%v  areas=%v  widths=%v\n" .image .size $size $idealW $areas $widths */}}
+{{- /* Just a big list, in descending order (so that default size is first, and so that JS, e.g. lightboxSSA, can handle the list easily) */ -}} 
+{{- $allwidths := slice 1800 1600 1400 1200 1000 800 600 400 200 -}}
+{{- $maxwidth := (int (.maxwidth | default 2000)) -}}
 
-    {{ $sizeString := printf "(min-width: 1200px) %dvw, (min-width: 992px) %dvw, (min-width: 768px) %dvw, (min-width: 576px) %dvw, %dvw" (index $widths 0) (index $widths 1) (index $widths 2) (index $widths 3) (index $widths 4) }}
-    {{/* warnf "sizeString=%s\n" $sizeString */}} 
+{{- /* now only one set of calcs required */ -}}
+{{- $idealAspect := 1.4 -}}
+{{- $areas := slice -}}
+{{- $widths := slice -}}
+{{- range $w := $idealW -}}
+  {{- $areas = $areas | append (int (math.Round (div (mul $w $w) $idealAspect))) -}}
+  {{- $area := div (mul $w $w) $idealAspect -}}
+  {{- /* warnf "** w=%v/%T iA=%v/%T a=%v/%T" $w $w $idealAspect $idealAspect $area $area */ -}}
+  {{- /* NOTE use of $. to access fields in outer scope (because . is different within a range) */ -}}
+  {{- $y := math.Sqrt (div $area $.aspect) -}}
+  {{- warnf "fsi:  image=%v  area=%v y=%v $.aspect=%v pya=%v mrm=%v m100m=%v inthat=%v\n" $.image $area $y $.aspect (mul $y $.aspect)  (math.Round (mul $y $.aspect)) (math.Min 100 (math.Round (mul $y $.aspect)))  (int (math.Min 100 (math.Round (mul $y $.aspect)))) -}}
+  {{- $widths = $widths | append (int (math.Min 100 (math.Round (mul $y $.aspect)))) -}}
+{{- end -}}
+{{- /* warnf "fs:  image=%v .size=%v $size=%v idealW=%v  areas=%v  widths=%v\n" .image .size $size $idealW $areas $widths */ -}}
 
-    {{- $imagelist := slice -}}
-    {{- range $w := $allwidths -}}
-      {{- if le $w $maxwidth -}}
-        {{- $imagelist = $imagelist | append ($.image.Resize (printf "%dx jpg" $w)) -}}
-      {{- end -}}
-    {{- end -}}
-    {{- if eq (len $imagelist) 0 -}}
-      {{- $imagelist = $imagelist | append .image -}}
-    {{- end -}}
+{{- $sizeString := printf "(min-width: 1200px) %dvw, (min-width: 992px) %dvw, (min-width: 768px) %dvw, (min-width: 576px) %dvw, %dvw" (index $widths 0) (index $widths 1) (index $widths 2) (index $widths 3) (index $widths 4) -}}
+{{- /* warnf "sizeString=%s\n" $sizeString */ -}} 
 
-{{ $results := dict "imagelist" $imagelist  "sizestring" $sizeString }}
-{{ return $results }}
+{{- $imagelist := slice -}}
+{{- range $w := $allwidths -}}
+  {{- if le $w $maxwidth -}}
+    {{- $imagelist = $imagelist | append ($.image.Resize (printf "%dx jpg" $w)) -}}
+  {{- end -}}
+{{- end -}}
+{{- if eq (len $imagelist) 0 -}}
+  {{- $imagelist = $imagelist | append .image -}}
+{{- end -}}
+
+{{- $results := dict "imagelist" $imagelist  "sizestring" $sizeString -}}
+{{- return $results -}}

@@ -1,4 +1,4 @@
-{{/*
+{{- /*
   figset shortcode, version of figure with srcsetting,
   via the similar partial.
 
@@ -13,7 +13,7 @@
   args:
     name (of image within the page bundle)
     position - left, right, centre...
-    size - small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
+    size - small, medium, large, full  TODO other sizes
     height - height of image -- overrides size, probably in pixels, for making all figures in a row the same height
     maxwidth -- biggest size used for srcset in pixels
     size2 - like size, but presumably bigger -- to expand image
@@ -32,40 +32,40 @@
 
   e.g.  {{< figset name="barnowl.jpg" caption="Owl on a post" alt="photo" >}}
 
-*/}}
+*/ -}}
 
-{{/* Get parameters, either from the enclosing figrow, or from this figset shortcode. */}}
-{{/* (Default values will be applied in the partial) */}}
-{{/* Set $p to the parent (if it's a figrow), or else this context */}}
-{{ $p := . }}
-{{ $figrow := false }}
-{{ if .Parent }}
-  {{ if eq .Parent.Name "figrow" }}
-    {{ $p = .Parent }}
-    {{ $figrow = true }}
-  {{ end }}
-{{ end }}
-{{ $name     := .Get "name"     | default ($p.Get "name")     }}
-{{ $position := .Get "position" | default ($p.Get "position") }}
-{{ $size     := .Get "size"     | default ($p.Get "size")     }}
-{{ $sameheight   := .Get "sameheight"   | default ($p.Get "sameheight")   }}
-{{ $maxwidth := .Get "maxwidth" | default ($p.Get "maxwidth") }}
-{{ $selfsize := .Get "selfsize" | default ($p.Get "selfsize") }}
-{{ $title    := .Get "title"    | default ($p.Get "title")    }}
-{{ $caption  := .Get "caption"  | default ($p.Get "caption")  }}
-{{ $alt      := .Get "alt"      | default ($p.Get "alt")      }}
-{{ $url      := .Get "url"      | default ($p.Get "url")      }}
-{{ $gallery  := .Get "gallery"  | default ($p.Get "gallery")  }}
-{{ $lightbox := .Get "lightbox" | default ($p.Get "lightbox") }}
-{{ $align    := .Get "align"    | default ($p.Get "align")    }}
-{{/* class1 from figrow parent can be overridden or supplemented by class2 from figset */}}
-{{ $class1   := $p.Get "figsetclass" }}
-{{ $class2   := .Get "class" }}
-{{ $capclass := .Get "capclass" | default ($p.Get "capclass") }}
-{{ $id       := .Get "id" }}
-{{ $clear    := .Get "clear" }}
-{{ $debug    := .Get "debug" | default ($p.Get "debug") }}
-{{ $sharpen  := .Get "sharpen" | default ($p.Get "sharpen") }}
+{{- /* Get parameters, either from the enclosing figrow, or from this figset shortcode. */}}
+{{- /* (Default values will be applied in the partial) */}}
+{{- /* Set $p to the parent (if it's a figrow), or else this context */}}
+{{- $p := . -}}
+{{- $figrow := false -}}
+{{- if .Parent -}}
+  {{- if eq .Parent.Name "figrow" -}}
+    {{- $p = .Parent -}}
+    {{- $figrow = true -}}
+  {{- end -}}
+{{- end -}}
+{{- $name     := .Get "name"     | default ($p.Get "name")     -}}
+{{- $position := .Get "position" | default ($p.Get "position") -}}
+{{- $size     := .Get "size"     | default ($p.Get "size")     -}}
+{{- $sameheight := .Get "sameheight" | default ($p.Get "sameheight") -}}
+{{- $maxwidth := .Get "maxwidth" | default ($p.Get "maxwidth") -}}
+{{- $selfsize := .Get "selfsize" | default ($p.Get "selfsize") -}}
+{{- $title    := .Get "title"    | default ($p.Get "title")    -}}
+{{- $caption  := .Get "caption"  | default ($p.Get "caption")  -}}
+{{- $alt      := .Get "alt"      | default ($p.Get "alt")      -}}
+{{- $url      := .Get "url"      | default ($p.Get "url")      -}}
+{{- $gallery  := .Get "gallery"  | default ($p.Get "gallery")  -}}
+{{- $lightbox := .Get "lightbox" | default ($p.Get "lightbox") -}}
+{{- $align    := .Get "align"    | default ($p.Get "align")    -}}
+{{- /* class1 from figrow parent can be overridden or supplemented by class2 from figset */ -}}
+{{- $class1   := $p.Get "figsetclass" -}}
+{{- $class2   := .Get "class" -}}
+{{- $capclass := .Get "capclass" | default ($p.Get "capclass") -}}
+{{- $id       := .Get "id" -}}
+{{- $clear    := .Get "clear" -}}
+{{- $debug    := .Get "debug" | default ($p.Get "debug") -}}
+{{- $sharpen  := .Get "sharpen" | default ($p.Get "sharpen") -}}
 
-{{ partial "figset.html" (dict "site" .Site  "page" .Page   "name" $name  "position" $position  "size" $size  "sameheight" $sameheight  "maxwidth" $maxwidth  "selfsize" $selfsize  "title" $title  "caption" $caption  "capclass" $capclass  "alt" $alt  "url" $url  "gallery" $gallery  "lightbox" $lightbox  "align" $align  "class1" $class1  "class2" $class2  "id" $id  "clear" $clear  "figrow" $figrow  "debug" $debug  "sharpen" $sharpen) }}
+{{- partial "figset.html" (dict "site" .Site  "page" .Page   "name" $name  "position" $position  "size" $size  "sameheight" $sameheight  "maxwidth" $maxwidth  "selfsize" $selfsize  "title" $title  "caption" $caption  "capclass" $capclass  "alt" $alt  "url" $url  "gallery" $gallery  "lightbox" $lightbox  "align" $align  "class1" $class1  "class2" $class2  "id" $id  "clear" $clear  "figrow" $figrow  "debug" $debug  "sharpen" $sharpen) -}}
 
