@@ -142,13 +142,13 @@
 
   {{- if eq (lower $url) "self" -}}
     {{- /* Link to the image itself -- but limited by selfsize */ -}}
-    {{- /* FIXME do we need to do the whole srcset thing for the linked image? NO *
-    {{- $imagedetails := partial "figset_imagesize.html" (dict "image" $image "size" $selfsize "aspect" $aspect "maxwidth" $maxwidth) -}}
-    {{- if $debug -}}{{- warnf "figset: imagedetails: %+v" $imagedetails -}}{{- end -}}
-    {{- $linkedimage := index $imagedetails.imagelist 0 -}}
-    {{- $url = $linkedimage.RelPermalink -}}
-    {{- if $debug -}}{{warnf "figset: linked=%+#v url=%s" $linkedimage $url -}}{{- end -}}
-    */ -}}
+                    {{- /* FIXME do we need to do the whole srcset thing for the linked image? NO *
+                    {{- $imagedetails := partial "figset_imagesize.html" (dict "image" $image "size" $selfsize "aspect" $aspect "maxwidth" $maxwidth) -}}
+                    {{- if $debug -}}{{- warnf "figset: imagedetails: %+v" $imagedetails -}}{{- end -}}
+                    {{- $linkedimage := index $imagedetails.imagelist 0 -}}
+                    {{- $url = $linkedimage.RelPermalink -}}
+                    {{- if $debug -}}{{warnf "figset: linked=%+#v url=%s" $linkedimage $url -}}{{- end -}}
+                    */ -}}
     {{- $linkedimage := $image -}}
     {{- if gt $origsize $selfsize -}}
       {{- if eq $origsize $origwidth -}}
@@ -227,6 +227,7 @@
       Each real image, with aspect ratio R', should have the same area, so its height is sqrt(A/R')
       and its width is its height*R'
       (Unless $sameheight, in which case we just take the height of the ideal image.)
+      TODO get this bit from the separate file?
     */ -}}
     {{- /* TODO can we abstract these numbers into classes in the SCSS?  but we need them here for calcs.  */ -}}
     {{- /*       screen width:  1200+ 992+ 768+ 576+ else */ -}}
@@ -352,28 +353,27 @@
   {{- if and $url (not $lightboxstring) -}}{{- /* Link but no lightbox -- wrap with <a> */ -}}
     {{- $anchor = printf "<a href=\"%s\">" $url -}}
   {{- end -}}
-
   {{- with $anchor -}}{{- safeHTML . -}}{{- end -}}
-  <figure {{- with $id -}}id="{{- . -}}"{{- end -}} class="figset {{- $posclass -}} {{- $asclass -}} {{- $class1 -}} {{- $class2 -}}" {{- $lightboxstring | safeHTMLAttr -}}>
+  <figure {{ with $id -}}id="{{ . }}"{{- end -}} class="figset {{ $posclass }} {{ $asclass }} {{ $class1 }} {{ $class2 }}" {{ $lightboxstring | safeHTMLAttr }}>
   <img loading=lazy class="figset-img"
-    {{- with $srcsetString -}}srcset="{{- . | safeHTMLAttr -}}"
-      {{- with $sizesString -}}sizes="{{- . | safeHTMLAttr -}}"{{- end -}}
-    {{- end -}}
-    src="{{- $defaultimage.RelPermalink -}}" 
-    {{- with $alt -}} alt="{{- . | safeHTMLAttr -}}" {{- end -}}{{- /* FIXME is it safe?? */ -}}
-    {{- with $title -}} title="{{- . | safeHTMLAttr -}}" {{- end -}}
-    {{- with $imagemargincss -}} style="{{- . | safeCSS -}}"{{- end -}}
+    {{ with $srcsetString }}srcset="{{ . | safeHTMLAttr }}"
+      {{ with $sizesString }}sizes="{{ . | safeHTMLAttr }}"{{ end }}
+    {{ end }}
+    src="{{ $defaultimage.RelPermalink }}" 
+    {{ with $alt }}alt="{{ . | safeHTMLAttr }}"{{ end }}
+    {{ with $title }}title="{{ . | safeHTMLAttr }}"{{ end }}
+    {{ with $imagemargincss }} style="{{ . | safeCSS }}"{{ end }}
   >
   {{- if $caption -}}
-  <figcaption class="figset-caption {{- $capclass -}}">{{- safeHTML $caption -}}</figcaption>
+  <figcaption class="figset-caption {{ $capclass }}">{{ safeHTML $caption }}</figcaption>
   {{- end -}}
   </figure>
   {{- if $anchor -}}</a>{{- end -}}
 
 {{- else -}}
-[image '{{- $name -}}' not found]
+[image '{{ $name }}' not found]
 {{- end -}}
 
 {{- if ne $clear "none" -}}
-<div style="clear: {{- $clear -}};"></div>
+<div style="clear: {{ $clear }};"></div>
 {{- end -}}
