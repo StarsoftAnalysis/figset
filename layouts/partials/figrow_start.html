@@ -5,6 +5,8 @@
   TODO:
   * 'wrap' param -- to pass to lightbox.  Or are lightbox settings done via the frontmatter??
   * redo justify as classes (figrow-center etc.) rather than inline style 
+  * 'clear=...' param
+  * don't need site or page here
 
   Can be called directly, or via the figrow shortcode.
   Note that the shortcode can put more things in the dict to be accessed
@@ -23,10 +25,10 @@
 
   If from another template (rather than via shortcodes), do this: 
   (note use of "figrow true" to tell figset that it's in a row)
-    {{ partial "figrow_start.html" (dict  "page" .Page  "justify-contents" "center"  "align-items" "top"  "size"  "small"  ...) }}
-    {{ partial "figset.html"       (dict  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image1.jpg"  "caption" "a photo"  ...)   }}
-    {{ partial "figset.html"       (dict  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image2.jpg"  "caption" "another photo"  ...) }}
-    {{ partial "figrow_end.html"   (dict  "page" .Page) }}
+    {{ partial "figrow_start.html" (dict  "site" .Site  "page" .Page  "justify-contents" "center"  "align-items" "top"  "size"  "small"  ...) }}
+    {{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image1.jpg"  "caption" "a photo"  ...)   }}
+    {{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image2.jpg"  "caption" "another photo"  ...) }}
+    {{ partial "figrow_end.html"   (dict  "site" .Site  "page" .Page) }}
 
 */ -}}
 

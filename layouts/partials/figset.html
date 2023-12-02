@@ -1,13 +1,6 @@
 {{- /*
   figset partial, version of figure with srcsetting.
 
-  // TODO before merging: testing sameheight (and non-sameheight) with a single image, with and without lightbox.
-  //    and reinstate max vw of 100%
-
-  DON'T FORGET!!
-  * when using figrow_start partial from another template:
-    - put 'figrow true' in the figset partial's dict, otherwise the figcaptions get all narrow -- still don't know why exactly.
-
   TODO:
   * refactor the image filtering
   ** Double check thinking re min 1 or 2 in srcset -- is the fallback src in addition to that?
@@ -58,8 +51,8 @@
     .site       -- site
     .page       -- current page
     .figrow     -- true if we're within a figrow (which is independent of whether there's a gallery)
-    .name       -- (of image within the page bundle)
-    .image      -- (resource) -- image overrides name
+    .name       -- name of image within the page bundle or as a remote resource (starting with http[s]://)
+    .image      -- (resource) -- image overrides name -- for use by other templates and partials
     .position   -- left/start, right/end, centre/center -- can be abbreviated.
     .size       -- thumb, small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
     .maxwidth   -- biggest size used for srcset in pixels, or for url=self
@@ -89,11 +82,17 @@
 {{- if isset . "image" -}}
   {{- $image = .image -}}
 {{- else -}}
-  {{- $image = .page.Resources.GetMatch $name -}}
+  {{- $namelower := strings.ToLower $name -}}
+  {{- if or (strings.HasPrefix $namelower "https://") (strings.HasPrefix $namelower "http://") -}}
+    {{- $image = resources.GetRemote $name -}}
+  {{- else -}}
+    {{- $image = .page.Resources.GetMatch $name -}}
+  {{- end -}}
 {{- end -}}
 {{- if not $image -}}
   {{- $image = resources.GetMatch "images/figset/placeholder.png" -}}{{- /* looks in assets/images/figset/ */ -}}
 {{- end -}}
+
 
 {{- /* carry on with parameters and defaults */ -}}
 {{- $position := lower (.position | default .site.Params.figset.position) | default "" -}}
