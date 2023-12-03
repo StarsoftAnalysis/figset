@@ -1,34 +1,34 @@
 {{- /*
 
-  figrow partial
+figrow partial
 
-  TODO:
-  * 'wrap' param -- to pass to lightbox.  Or are lightbox settings done via the frontmatter??
-  * redo justify as classes (figrow-center etc.) rather than inline style 
-  * 'clear=...' param
-  * don't need site or page here
+TODO:
+* 'wrap' param -- to pass to lightbox.  Or are lightbox settings done via the frontmatter??
+* redo justify as classes (figrow-center etc.) rather than inline style 
+* 'clear=...' param
+* don't need site or page here
 
-  Can be called directly, or via the figrow shortcode.
-  Note that the shortcode can put more things in the dict to be accessed
-  from the figset shortcode: this doesn't work when using the partials directly,
-  so common values, e.g. gallery or size, have to be in each invocation of figset.
+Can be called directly, or via the figrow shortcode.
+Note that the shortcode can put more things in the dict to be accessed
+from the figset shortcode: this doesn't work when using the partials directly,
+so common values, e.g. gallery or size, have to be in each invocation of figset.
 
-  Parameters (in the dict/context):
-    * justify - values as for CSS's justify-content
-      Accepts these values:
-        center*|centre* start*|left*|flex-start end*|right*|flex-end around*|space-around between*|space-between evenly*|space-evenly
-      where values with an asterisk can be abbreviated as long as they're not ambiguous.
-    * id - CSS id for the figrow div
-    * class -- CSS class(es) for the figrow div
-  Other parameters supplied by the figrow shortcode are accessed by the 
-  figset shortcode via its .Parent.  They are not error-checked here.
+Parameters (in the dict/context):
+* justify - values as for CSS's justify-content
+Accepts these values:
+center*|centre* start*|left*|flex-start end*|right*|flex-end around*|space-around between*|space-between evenly*|space-evenly
+where values with an asterisk can be abbreviated as long as they're not ambiguous.
+* id - CSS id for the figrow div
+* class -- CSS class(es) for the figrow div
+Other parameters supplied by the figrow shortcode are accessed by the 
+figset shortcode via its .Parent.  They are not error-checked here.
 
-  If from another template (rather than via shortcodes), do this: 
-  (note use of "figrow true" to tell figset that it's in a row)
-    {{ partial "figrow_start.html" (dict  "site" .Site  "page" .Page  "justify-contents" "center"  "align-items" "top"  "size"  "small"  ...) }}
-    {{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image1.jpg"  "caption" "a photo"  ...)   }}
-    {{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image2.jpg"  "caption" "another photo"  ...) }}
-    {{ partial "figrow_end.html"   (dict  "site" .Site  "page" .Page) }}
+If from another template (rather than via shortcodes), do this: 
+(note use of "figrow true" to tell figset that it's in a row)
+{{ partial "figrow_start.html" (dict  "site" .Site  "page" .Page  "justify-contents" "center"  "align-items" "top"  "size"  "small"  ...) }}
+{{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image1.jpg"  "caption" "a photo"  ...)   }}
+{{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image2.jpg"  "caption" "another photo"  ...) }}
+{{ partial "figrow_end.html"   (dict  "site" .Site  "page" .Page) }}
 
 */ -}}
 
@@ -40,31 +40,31 @@
 
 {{- $jcclass := "" -}}
 {{- if or (or (hasPrefix "start" $justify) (hasPrefix "left" $justify)) (eq $justify "flex-start") -}}
-  {{- $jcclass = "figrow-jcstart" -}}
+    {{- $jcclass = "figrow-jcstart" -}}
 {{- else if or (hasPrefix "right" $justify) (eq $justify "flex-end") -}}{{/* "end" is handled below */}}
-  {{- $jcclass = "figrow-jcend" -}}
+    {{- $jcclass = "figrow-jcend" -}}
 {{- else if or (hasPrefix "center" $justify) (hasPrefix "centre" $justify) -}}
-  {{- $jcclass = "figrow-jccenter" -}}
+    {{- $jcclass = "figrow-jccenter" -}}
 {{- else if or (hasPrefix "around" $justify) (eq $justify "space-around") -}}
-  {{- $jcclass = "figrow-jcaround" -}}
+    {{- $jcclass = "figrow-jcaround" -}}
 {{- else if or (hasPrefix "between" $justify) (eq $justify "space-between") -}}
-  {{- $jcclass = "figrow-jcbetween" -}}
+    {{- $jcclass = "figrow-jcbetween" -}}
 {{- else if eq $justify "space-evenly" -}}{{/* "evenly" is handled below */}}
-  {{- $jcclass = "figrow-jcevenly" -}}
+    {{- $jcclass = "figrow-jcevenly" -}}
 {{- else if hasPrefix $justify "e" -}}
-  {{/* Values beginning with "e" -- unique after one letter */}}
-  {{- $justify2 := substr $justify 1 -}}
-  {{- if $justify2 -}}
-    {{- if hasPrefix "nd" $justify2 -}}
-      {{- $jcclass = "figrow-jceend" -}}
-    {{- else if hasPrefix "venly" $justify2 -}}
-      {{- $jcclass = "figrow-jcevenly" -}}
+    {{/* Values beginning with "e" -- unique after one letter */}}
+    {{- $justify2 := substr $justify 1 -}}
+    {{- if $justify2 -}}
+        {{- if hasPrefix "nd" $justify2 -}}
+            {{- $jcclass = "figrow-jceend" -}}
+        {{- else if hasPrefix "venly" $justify2 -}}
+            {{- $jcclass = "figrow-jcevenly" -}}
+        {{- end -}}
     {{- end -}}
-  {{- end -}}
 {{- end -}}
 {{- if not $jcclass -}}
-  {{- warnf "figrow: invalid justify value '%s': using '%s'" $justify $dftj -}}
-  {{- $jcclass = "figrow-jccenter" -}}
+    {{- warnf "figrow: invalid justify value '%s': using '%s'" $justify $dftj -}}
+    {{- $jcclass = "figrow-jccenter" -}}
 {{- end -}}
 
 {{- if $debug -}}{{- warnf "figrow: justify=%s id=%s class=%s" $justify $id $class -}}{{- end -}}

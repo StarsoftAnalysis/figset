@@ -1,75 +1,75 @@
 {{- /*
-  figset partial, version of figure with srcsetting.
+figset partial, version of figure with srcsetting.
 
-  TODO:
-  * ? maxwidth or maxsize?  -- widths are used vs screen widths / CSS limits...
-  * refactor the image filtering
-  ** Double check thinking re min 1 or 2 in srcset -- is the fallback src in addition to that?
-  * option to clear before rather than after?
-  * Use separate file for calcs??
-  * difference between small and thumb is too much?
-  * Still don't know when to use htmlEscape vs safeHTMLAttr -- the former leaves &lt; in title attribute, but not in data-title !?
-  * more size options, e.g. 50% (width), 6em, bs4 class... -- but how to scale those for area?
-  * decouple from lightboxSSA to allow use of other lightboxes??
-  * url/link -- option e.g. url=self to link to selfsize version of same image
-    - rename url to link?
-  * fix 'null' when hovering over image in carousel
-  * allow user to specify hugo's image processing and filtering options.  How will that interact with the resizing that we're doing?  Maybe not the resizing options, then.  Just: rotate (e.g. 'r90' when resizing); output format (jpeg, png, webp); quality;   But wait!  These can be set globally in config.toml -- does the user need per-image settings?
-     ... overlay (for watermark/logo)
-     ... see https://gohugo.io/functions/images/#text
-  * maxwidth limits e.g. La Alhambra on a wide screen.  think about it -- set a maxarea instead?
-  * left/right/start/end for Ltr and RTL scripts -- not well implemented so far.  left gets used as start, and then we don't know which was intended -- perhaps just get rid of left/right
-     - but then in CSS, wanting to do float-left when start was asked for...
-     - OR, as text-align and float can do start/end, when should keep left separate from start etc.
-     - BETTER: keep left/start separate -- class for left can do the clever :dir() thing.  etc.
-  * ??? remote images
-  * 'jpg' is hard-coded in places here
+TODO:
+* ? maxwidth or maxsize?  -- widths are used vs screen widths / CSS limits...
+* refactor the image filtering
+** Double check thinking re min 1 or 2 in srcset -- is the fallback src in addition to that?
+* option to clear before rather than after?
+* Use separate file for calcs??
+* difference between small and thumb is too much?
+* Still don't know when to use htmlEscape vs safeHTMLAttr -- the former leaves &lt; in title attribute, but not in data-title !?
+* more size options, e.g. 50% (width), 6em, bs4 class... -- but how to scale those for area?
+* decouple from lightboxSSA to allow use of other lightboxes??
+* url/link -- option e.g. url=self to link to selfsize version of same image
+- rename url to link?
+* fix 'null' when hovering over image in carousel
+* allow user to specify hugo's image processing and filtering options.  How will that interact with the resizing that we're doing?  Maybe not the resizing options, then.  Just: rotate (e.g. 'r90' when resizing); output format (jpeg, png, webp); quality;   But wait!  These can be set globally in config.toml -- does the user need per-image settings?
+... overlay (for watermark/logo)
+... see https://gohugo.io/functions/images/#text
+* maxwidth limits e.g. La Alhambra on a wide screen.  think about it -- set a maxarea instead?
+* left/right/start/end for Ltr and RTL scripts -- not well implemented so far.  left gets used as start, and then we don't know which was intended -- perhaps just get rid of left/right
+- but then in CSS, wanting to do float-left when start was asked for...
+- OR, as text-align and float can do start/end, when should keep left separate from start etc.
+- BETTER: keep left/start separate -- class for left can do the clever :dir() thing.  etc.
+* ??? remote images
+* 'jpg' is hard-coded in places here
 
-  DONE:
-  * if image not found, create a placeholder with various assumptions, e.g. it's square. i.e. use a placeholder image in static or wherever
-  * use flex-grow and -shrink ??  NO -- see https://codepen.io/starsoftanalysis/pen/Rwyppdv
-  * FIRST: decide how multiple figsets should behave if not within a figrow. -- maybe don't try too hard -- encourage use of figrow.
-     - e.g. poses l, c, r  pushes third one to next line.
-  * move error handling to shortcodes? -- see https://gohugo.io/templates/shortcode-templates/#error-handling-in-shortcodes
-  * Move anchor inside figure
-  * 'clear' option for figset (as done for figrow) -- see type2 test.
-  * NEXT: don't do flex if no ROW! OR do use a flex div to do the l/r/center!? -- would need another div that the figrow didn't provide.
-  * FIXME: mx-auto for non-figrow centred image doesn't work. (e.g. test1)
-  * caption alignment -- need to match figrow's justify?   or does figset have a justify too?
-  * need left/center/right options for captions -- in figset  and margin:0 auto for image if centred
-  * add Hugo's unsharp mask: https://gohugo.io/functions/images/unsharpmask/
-  * get defaults from config file
+DONE:
+* if image not found, create a placeholder with various assumptions, e.g. it's square. i.e. use a placeholder image in static or wherever
+* use flex-grow and -shrink ??  NO -- see https://codepen.io/starsoftanalysis/pen/Rwyppdv
+* FIRST: decide how multiple figsets should behave if not within a figrow. -- maybe don't try too hard -- encourage use of figrow.
+- e.g. poses l, c, r  pushes third one to next line.
+* move error handling to shortcodes? -- see https://gohugo.io/templates/shortcode-templates/#error-handling-in-shortcodes
+* Move anchor inside figure
+* 'clear' option for figset (as done for figrow) -- see type2 test.
+* NEXT: don't do flex if no ROW! OR do use a flex div to do the l/r/center!? -- would need another div that the figrow didn't provide.
+* FIXME: mx-auto for non-figrow centred image doesn't work. (e.g. test1)
+* caption alignment -- need to match figrow's justify?   or does figset have a justify too?
+* need left/center/right options for captions -- in figset  and margin:0 auto for image if centred
+* add Hugo's unsharp mask: https://gohugo.io/functions/images/unsharpmask/
+* get defaults from config file
 
-  This can be used from another template, with args passed in as a dict, e.g.
-    {{- partial "figset.html" (dict "page" . "name" "thingy.jpg" "size" "medium" ) -}}
-  or via the corresponding shortcode:
-    {{< figset name="fred.png" size="medium" >}}
+This can be used from another template, with args passed in as a dict, e.g.
+{{- partial "figset.html" (dict "page" . "name" "thingy.jpg" "size" "medium" ) -}}
+or via the corresponding shortcode:
+{{< figset name="fred.png" size="medium" >}}
 
-  The figset shortcode can get all options from a figrow parent (if any).
+The figset shortcode can get all options from a figrow parent (if any).
 
-  args (in the dict/context):
-    .site       -- site
-    .page       -- current page
-    .figrow     -- true if we're within a figrow (which is independent of whether there's a gallery)
-    .name       -- name of image within the page bundle or as a remote resource (starting with http[s]://)
-    .image      -- (resource) -- image overrides name -- for use by other templates and partials
-    .position   -- left/start, right/end, centre/center -- can be abbreviated.
-    .size       -- thumb, small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
-    .maxwidth   -- biggest size used for srcset in pixels
-    .selfsize   -- max size in px of url=self image
-    .title      -- shows as tool-tip
-    .caption    -- forms the figcaption
-    .alt        -- alt text for img, defaults to title or caption
-    .url        -- url to link to -- on second click if galleried, or 'self'
-    .gallery    -- name of gallery -- just has to be the same on a group of figures to make them a gallery - implies lightbox
-    .lightbox   -- anything truthy to add lightbox effect without making it a gallery
-    .sameheight -- true to make all images with the same .size value the same height 
-    .class1     -- classes from parent figrow
-    .class2     -- classes for this figset
-    .capclass   -- classes for figcaption
-    .id         -- id of this figset
-    .debug      -- true to output debug info as warnings
-    .sharpen    -- true to apply unsharp mask filter; does not affect fall-back non-srcset image
+args (in the dict/context):
+.site       -- site
+.page       -- current page
+.figrow     -- true if we're within a figrow (which is independent of whether there's a gallery)
+.name       -- name of image within the page bundle or as a remote resource (starting with http[s]://)
+.image      -- (resource) -- image overrides name -- for use by other templates and partials
+.position   -- left/start, right/end, centre/center -- can be abbreviated.
+.size       -- thumb, small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
+.maxwidth   -- biggest size used for srcset in pixels
+.selfsize   -- max size in px of url=self image
+.title      -- shows as tool-tip
+.caption    -- forms the figcaption
+.alt        -- alt text for img, defaults to title or caption
+.url        -- url to link to -- on second click if galleried, or 'self'
+.gallery    -- name of gallery -- just has to be the same on a group of figures to make them a gallery - implies lightbox
+.lightbox   -- anything truthy to add lightbox effect without making it a gallery
+.sameheight -- true to make all images with the same .size value the same height 
+.class1     -- classes from parent figrow
+.class2     -- classes for this figset
+.capclass   -- classes for figcaption
+.id         -- id of this figset
+.debug      -- true to output debug info as warnings
+.sharpen    -- true to apply unsharp mask filter; does not affect fall-back non-srcset image
 
 */ -}}
 
@@ -81,20 +81,19 @@
 {{- $image := "" -}}
 {{- $remoteImage := false -}}
 {{- if isset . "image" -}}
-  {{- $image = .image -}}
+    {{- $image = .image -}}
 {{- else -}}
-  {{- $namelower := strings.ToLower $name -}}
-  {{- if or (strings.HasPrefix $namelower "https://") (strings.HasPrefix $namelower "http://") -}}
-    {{- $image = resources.GetRemote $name -}}
-    {{- $remoteImage = true -}}
-  {{- else -}}
-    {{- $image = .page.Resources.GetMatch $name -}}
-  {{- end -}}
+    {{- $namelower := strings.ToLower $name -}}
+    {{- if or (strings.HasPrefix $namelower "https://") (strings.HasPrefix $namelower "http://") -}}
+        {{- $image = resources.GetRemote $name -}}
+        {{- $remoteImage = true -}}
+    {{- else -}}
+        {{- $image = .page.Resources.GetMatch $name -}}
+    {{- end -}}
 {{- end -}}
 {{- if not $image -}}
-  {{- $image = resources.GetMatch "images/figset/placeholder.png" -}}{{- /* looks in assets/images/figset/ */ -}}
+    {{- $image = resources.GetMatch "images/figset/placeholder.png" -}}{{- /* looks in assets/images/figset/ */ -}}
 {{- end -}}
-
 
 {{- /* carry on with parameters and defaults */ -}}
 {{- $position := lower (.position | default .site.Params.figset.position) | default "" -}}
@@ -121,121 +120,114 @@
 {{- if $debug -}}{{- warnf "figset: .page=%s  name=%s image=%v\n" .page.Page $name $image -}}{{- end -}}
 
 {{- if $image -}}
-  {{- $origwidth := $image.Width -}}
-  {{- $origheight := $image.Height -}}
-  {{- $aspect := div (float $origwidth) (float $origheight) -}}
-  {{- $origsize := int (math.Max $origwidth $origheight) -}}
+    {{- $origwidth := $image.Width -}}
+    {{- $origheight := $image.Height -}}
+    {{- $aspect := div (float $origwidth) (float $origheight) -}}
+    {{- $origsize := int (math.Max $origwidth $origheight) -}}
 
-  {{- /* Just a big list, in descending order (so that default size is first, and so that JS (i.e. lightboxSSA) can handle the list easily) */ -}} {{- /* REMOVE -- it's in _imagesize */ -}}
-  {{- $allwidths := slice 3200 2800 2400 2000 1800 1600 1400 1200 1000 800 600 400 200 -}}{{- /* REMOVE -- it's in _imagesize */ -}}
-  {{- if gt $maxwidth $origwidth -}}{{- $maxwidth = $origwidth -}}{{- end -}}
-  {{- if $debug -}}{{- warnf "figset: origw,h=%d,%d aspect=%.2f origsize=%d ssize=%d maxwidth=%d\n" $origwidth $origheight $aspect $origsize $selfsize $maxwidth -}}{{- end -}}
+    {{- /* Just a big list, in descending order (so that default size is first, and so that JS (i.e. lightboxSSA) can handle the list easily) */ -}} {{- /* REMOVE -- it's in _imagesize */ -}}
+    {{- $allwidths := slice 3200 2800 2400 2000 1800 1600 1400 1200 1000 800 600 400 200 -}}{{- /* REMOVE -- it's in _imagesize */ -}}
+    {{- if gt $maxwidth $origwidth -}}{{- $maxwidth = $origwidth -}}{{- end -}}
+    {{- if $debug -}}{{- warnf "figset: origw,h=%d,%d aspect=%.2f origsize=%d ssize=%d maxwidth=%d\n" $origwidth $origheight $aspect $origsize $selfsize $maxwidth -}}{{- end -}}
 
-  {{- $heightval := 0 -}}
-  {{- $heightunit := "" -}}
-  {{- $defaultimage := "" -}}
-  {{- $defaultwidth := 0  -}}
-  {{- $imagelist := slice -}}
-  {{- $imagemargincss := "" -}}
-  {{- $sizes := "" -}}
-  {{- $sizesString := "" -}}  
-  {{- $unsharpMaskFilter := images.UnsharpMask 10.0 0.5 0.03 -}}
+    {{- $heightval := 0 -}}
+    {{- $heightunit := "" -}}
+    {{- $defaultimage := "" -}}
+    {{- $defaultwidth := 0  -}}
+    {{- $imagelist := slice -}}
+    {{- $imagemargincss := "" -}}
+    {{- $sizes := "" -}}
+    {{- $sizesString := "" -}}  
+    {{- $unsharpMaskFilter := images.UnsharpMask 10.0 0.5 0.03 -}}
 
-  {{- /* selfsize or maxwidth? */ -}}
-  {{- if eq (lower $url) "self" -}}
-    {{- /* Link to the image itself -- but limited by selfsize */ -}}
-                    {{- /* FIXME do we need to do the whole srcset thing for the linked image? NO *
-                    {{- $imagedetails := partial "figset_imagesize.html" (dict "image" $image "size" $selfsize "aspect" $aspect "maxwidth" $maxwidth) -}}
-                    {{- if $debug -}}{{- warnf "figset: imagedetails: %+v" $imagedetails -}}{{- end -}}
-                    {{- $linkedimage := index $imagedetails.imagelist 0 -}}
-                    {{- $url = $linkedimage.RelPermalink -}}
-                    {{- if $debug -}}{{warnf "figset: linked=%+#v url=%s" $linkedimage $url -}}{{- end -}}
-                    */ -}}
-    {{- if $remoteImage -}}
-      {{- $url = $name -}}
-    {{- else -}}
-      {{- $linkedimage := $image -}}
-      {{- if gt $origsize $selfsize -}}
-        {{- if eq $origsize $origwidth -}}
-          {{- /* landscape image */ -}}
-          {{- $linkedimage = $image.Resize (printf "%dx jpg" $selfsize) -}}
-          {{- if $sharpen -}}
-            {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
-            {{- /* warnf "sharpened 1 %s" $image */ -}}
-          {{- end -}}
-          {{- if $debug -}}
-            {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
-          {{- end -}}
+    {{- /* selfsize or maxwidth? */ -}}
+    {{- if eq (lower $url) "self" -}}
+        {{- /* Link to the image itself -- but limited by selfsize */ -}}
+        {{- if $remoteImage -}}
+            {{- $url = $name -}}
         {{- else -}}
-          {{- /* portrait image */ -}}
-          {{- $linkedimage = $image.Resize (printf "x%d jpg" $selfsize) -}}
-          {{- if $sharpen -}}
-            {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
-            {{- /* warnf "sharpened 2 %s" $image */ -}}
-          {{- end -}}
-          {{- if $debug -}}
-            {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
-          {{- end -}}
+            {{- $linkedimage := $image -}}
+            {{- if gt $origsize $selfsize -}}
+                {{- if eq $origsize $origwidth -}}
+                    {{- /* landscape image */ -}}
+                    {{- $linkedimage = $image.Resize (printf "%dx jpg" $selfsize) -}}
+                    {{- if $sharpen -}}
+                        {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
+                        {{- /* warnf "sharpened 1 %s" $image */ -}}
+                    {{- end -}}
+                    {{- if $debug -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                    {{- end -}}
+                {{- else -}}
+                    {{- /* portrait image */ -}}
+                    {{- $linkedimage = $image.Resize (printf "x%d jpg" $selfsize) -}}
+                    {{- if $sharpen -}}
+                        {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
+                        {{- /* warnf "sharpened 2 %s" $image */ -}}
+                    {{- end -}}
+                    {{- if $debug -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+            {{- $url = $linkedimage.RelPermalink -}}
         {{- end -}}
-      {{- end -}}
-      {{- $url = $linkedimage.RelPermalink -}}
     {{- end -}}
-  {{- end -}}
 
-  {{- /* Position is silently ignored within a figrow */ -}}
-  {{- $posclass := "" -}}
-  {{- /* position: left/start | right/end | centre/center -- can be abbreviated. */ -}}
-  {{- if or (hasPrefix "left" $position) (hasPrefix "start" $position) -}}
-    {{- $posclass = "figset-posstart" -}}
-  {{- else if or (hasPrefix "right" $position) (hasPrefix "end" $position) -}}
-    {{- $posclass = "figset-posend" -}}
-  {{- else if or (hasPrefix "centre" $position) (hasPrefix "center" $position) -}}
-    {{- $posclass = "figset-poscenter" -}}
-  {{- else -}}
-    {{- warnf "figset: invalid position '%s' for image %v -- using 'centre'" $position $image -}}
-    {{- $posclass = "figset-poscenter" -}}
-  {{- end -}}
+    {{- /* Position is silently ignored within a figrow */ -}}
+    {{- $posclass := "" -}}
+    {{- /* position: left/start | right/end | centre/center -- can be abbreviated. */ -}}
+    {{- if or (hasPrefix "left" $position) (hasPrefix "start" $position) -}}
+        {{- $posclass = "figset-posstart" -}}
+    {{- else if or (hasPrefix "right" $position) (hasPrefix "end" $position) -}}
+        {{- $posclass = "figset-posend" -}}
+    {{- else if or (hasPrefix "centre" $position) (hasPrefix "center" $position) -}}
+        {{- $posclass = "figset-poscenter" -}}
+    {{- else -}}
+        {{- warnf "figset: invalid position '%s' for image %v -- using 'centre'" $position $image -}}
+        {{- $posclass = "figset-poscenter" -}}
+    {{- end -}}
 
-  {{- /* align-self: only within a figrow */ -}}
-  {{- $asclass := "" -}}
-  {{- if $figrow -}}
-    {{- if $align -}}
-      {{- if or (hasPrefix "start" $align) (eq $align "flex-end") -}}
-        {{- $asclass = "figset-asstart" -}}
-      {{- else if or (hasPrefix "end" $align) (eq $align "flex-start") -}}
-        {{- $asclass = "figset-asend" -}}
-      {{- else if or (hasPrefix "center" $align) (hasPrefix "centre" $align) -}}
-        {{- $asclass = "figset-ascenter" -}}
-      {{- else if hasPrefix "baseline" $align -}}
-        {{- $asclass = "figset-asbaseline" -}}
-      {{- else if hasPrefix "stretch" $align -}}
-        {{- $asclass = "figset-asstretch" -}}
-      {{- end -}}
+    {{- /* align-self: only within a figrow */ -}}
+    {{- $asclass := "" -}}
+    {{- if $figrow -}}
+        {{- if $align -}}
+            {{- if or (hasPrefix "start" $align) (eq $align "flex-end") -}}
+                {{- $asclass = "figset-asstart" -}}
+            {{- else if or (hasPrefix "end" $align) (eq $align "flex-start") -}}
+                {{- $asclass = "figset-asend" -}}
+            {{- else if or (hasPrefix "center" $align) (hasPrefix "centre" $align) -}}
+                {{- $asclass = "figset-ascenter" -}}
+            {{- else if hasPrefix "baseline" $align -}}
+                {{- $asclass = "figset-asbaseline" -}}
+            {{- else if hasPrefix "stretch" $align -}}
+                {{- $asclass = "figset-asstretch" -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if not $asclass -}}
+            {{- $dft_as := "figset-ascenter" -}}
+            {{- if $sameheight -}}
+                {{- $dft_as = "figset-astart" -}}
+            {{- end -}}
+            {{- if $align -}}
+                {{- warnf "figset: invalid align value '%s' for image '%v'; using '%s'" $align $image $dft_as -}}
+            {{- end -}}
+            {{- $asclass = $dft_as -}}
+        {{- end -}}
     {{- end -}}
-    {{- if not $asclass -}}
-      {{- $dft_as := "figset-ascenter" -}}
-      {{- if $sameheight -}}
-        {{- $dft_as = "figset-astart" -}}
-      {{- end -}}
-      {{- if $align -}}
-        {{- warnf "figset: invalid align value '%s' for image '%v'; using '%s'" $align $image $dft_as -}}
-      {{- end -}}
-      {{- $asclass = $dft_as -}}
-    {{- end -}}
-  {{- end -}}
 
     {{- /* 
-      Image sizes are : thumbnail  small  medium  large  full -- any abbreviation is enough. 
-      Based on a 'typical' 1.4:1 image, these fit across screen sizes 
-      as defined in the $idealWXxx slices below (in vw aka % units)
-      (bearing in mind that the available width is not the whole screen width)
-      
-      The area A of each ideal image in term of aspect ratio (w/h) R is width*height or widthsquared/R
+    Image sizes are : thumbnail  small  medium  large  full -- any abbreviation is enough. 
+    Based on a 'typical' 1.4:1 image, these fit across screen sizes 
+    as defined in the $idealWXxx slices below (in vw aka % units)
+    (bearing in mind that the available width is not the whole screen width)
 
-      Each real image, with aspect ratio R', should have the same area, so its height is sqrt(A/R')
-      and its width is its height*R'
-      (Unless $sameheight, in which case we just take the height of the ideal image.)
-      TODO get this bit from the separate file?
+    The area A of each ideal image in term of aspect ratio (w/h) R is width*height or widthsquared/R
+
+    Each real image, with aspect ratio R', should have the same area, so its height is sqrt(A/R')
+    and its width is its height*R'
+    (Unless $sameheight, in which case we just take the height of the ideal image.)
+    TODO get this bit from the separate file?
     */ -}}
     {{- /* TODO can we abstract these numbers into classes in the SCSS?  but we need them here for calcs.  */ -}}
     {{- /*       screen width:  1200+ 992+ 768+ 576+ else */ -}}
@@ -248,41 +240,41 @@
 
     {{- $idealW := $idealWMedium -}}{{- /* used if none of the strings match */ -}}
     {{- if hasPrefix $size "t" -}}
-      {{- $idealW = $idealWThumb -}}
+        {{- $idealW = $idealWThumb -}}
     {{- else if hasPrefix $size "s" -}}
-      {{- $idealW = $idealWSmall -}}
+        {{- $idealW = $idealWSmall -}}
     {{- else if hasPrefix $size "m" -}}
-      {{- $idealW = $idealWMedium -}}
+        {{- $idealW = $idealWMedium -}}
     {{- else if hasPrefix $size "l" -}}
-      {{- $idealW = $idealWLarge -}}
+        {{- $idealW = $idealWLarge -}}
     {{- else if hasPrefix $size "f" -}}
-      {{- $idealW = $idealWFull -}}
+        {{- $idealW = $idealWFull -}}
     {{- else -}}
-      {{- warnf "figset: invalid value for size '%s' -- using 'medium' instead." $size -}}
+        {{- warnf "figset: invalid value for size '%s' -- using 'medium' instead." $size -}}
     {{- end -}}
 
     {{- $idealAspect  := 1.4 -}}{{- /* FIXME 1.5 ? */ -}}
     {{- $sizestrings := slice -}}
     {{- range $i, $w := $idealW -}}
-      {{- $y := 0 -}}
-      {{- $area := 0 -}}
-      {{- $width := 0 -}}
-      {{- if $sameheight -}}
-        {{- /* Make it the ideal height */ -}}
-        {{- $y = div $w $idealAspect -}}
-        {{- $width = mul $y $aspect -}}
-      {{- else -}}
-        {{- /* Keep the area the same */ -}}
-        {{- $area = div (mul $w $w) $idealAspect -}}
-        {{- $y = math.Sqrt (div $area $aspect) -}}
-        {{- $width = mul $y $aspect -}}
-      {{- end -}}
-      {{- /* $width = int (math.Min (math.Round $width) 100) */ -}}
-      {{- if eq (index $cutoffs $i) 0 -}}
-        {{- $sizestrings = $sizestrings | append (printf "%.3fvw" $width) -}}
-      {{- else -}}
-        {{- $sizestrings = $sizestrings | append (printf "(min-width: %dpx) %.3fvw" (index $cutoffs $i) $width) -}}
-      {{- end -}}
+        {{- $y := 0 -}}
+        {{- $area := 0 -}}
+        {{- $width := 0 -}}
+        {{- if $sameheight -}}
+            {{- /* Make it the ideal height */ -}}
+            {{- $y = div $w $idealAspect -}}
+            {{- $width = mul $y $aspect -}}
+        {{- else -}}
+            {{- /* Keep the area the same */ -}}
+            {{- $area = div (mul $w $w) $idealAspect -}}
+            {{- $y = math.Sqrt (div $area $aspect) -}}
+            {{- $width = mul $y $aspect -}}
+        {{- end -}}
+        {{- /* $width = int (math.Min (math.Round $width) 100) */ -}}
+        {{- if eq (index $cutoffs $i) 0 -}}
+            {{- $sizestrings = $sizestrings | append (printf "%.3fvw" $width) -}}
+        {{- else -}}
+            {{- $sizestrings = $sizestrings | append (printf "(min-width: %dpx) %.3fvw" (index $cutoffs $i) $width) -}}
+        {{- end -}}
     {{- end -}}
     {{- if $debug -}}{{- warnf "figset: image=%v .size=%v $size=%v idealW=%v\n" $image .size $size $idealW -}}{{- end -}}
 
@@ -291,102 +283,104 @@
 
     {{- /* Create range of image sizes not greater than maxwidth, starting with the original image */ -}}
     {{- if le $origwidth $maxwidth -}}
-      {{- /* put original image at start of list */ -}}
-      {{- $imagelist = $imagelist | append $image -}}
-      {{- $defaultimage = $image -}}
-      {{- $defaultwidth = $origwidth -}}
-      {{- if $debug -}}{{- warnf "starting imagelist with orig %s" $image.RelPermalink -}}{{- end -}}
+        {{- /* put original image at start of list */ -}}
+        {{- $imagelist = $imagelist | append $image -}}
+        {{- $defaultimage = $image -}}
+        {{- $defaultwidth = $origwidth -}}
+        {{- if $debug -}}{{- warnf "starting imagelist with orig %s" $image.RelPermalink -}}{{- end -}}
     {{- else -}}
-      {{- $newimage := $image.Resize (printf "%dx jpg" $maxwidth) -}}
-      {{- if $sharpen -}}
-        {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
-        {{- /* warnf "sharpened 3 %s" $image */ -}}
-      {{- end -}}
-      {{- if $debug -}}
-        {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
-        {{- warnf "starting imagelist with resized %s" $newimage.RelPermalink -}}
-      {{- end -}}
-      {{- /* put limited-to-maxwidth image at start of list */ -}}
-      {{- $imagelist = $imagelist | append $newimage -}}
-      {{- $defaultimage = $newimage -}}
-      {{- $defaultwidth = $maxwidth -}}
+        {{- $newimage := $image.Resize (printf "%dx jpg" $maxwidth) -}}
+        {{- if $sharpen -}}
+            {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
+            {{- /* warnf "sharpened 3 %s" $image */ -}}
+        {{- end -}}
+        {{- if $debug -}}
+            {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+            {{- warnf "starting imagelist with resized %s" $newimage.RelPermalink -}}
+        {{- end -}}
+        {{- /* put limited-to-maxwidth image at start of list */ -}}
+        {{- $imagelist = $imagelist | append $newimage -}}
+        {{- $defaultimage = $newimage -}}
+        {{- $defaultwidth = $maxwidth -}}
     {{- end -}}
     {{- /* add other image sizes to the list */ -}}
     {{- range $w := $allwidths -}}
-      {{- if and (le $w $maxwidth) (ne $w $defaultwidth) -}}
-        {{- if $debug -}}{{- warnf "figset: maxwidth=%v w=%v appending after resize %dx" $maxwidth $w $w -}}{{- end -}}
-        {{- $newimage := $image.Resize (printf "%dx jpg" $w) -}}
-        {{- if $sharpen -}}
-          {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
-          {{- /* warnf "sharpened 4 %s" $image */ -}}
+        {{- if and (le $w $maxwidth) (ne $w $defaultwidth) -}}
+            {{- if $debug -}}{{- warnf "figset: maxwidth=%v w=%v appending after resize %dx" $maxwidth $w $w -}}{{- end -}}
+            {{- $newimage := $image.Resize (printf "%dx jpg" $w) -}}
+            {{- if $sharpen -}}
+                {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
+                {{- /* warnf "sharpened 4 %s" $image */ -}}
+            {{- end -}}
+            {{- if $debug -}}
+                {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                {{- warnf "adding to imagelist %s" $newimage.RelPermalink -}}
+            {{- end -}}
+            {{- $imagelist = $imagelist | append $newimage -}}
         {{- end -}}
-        {{- if $debug -}}
-          {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
-          {{- warnf "adding to imagelist %s" $newimage.RelPermalink -}}
-        {{- end -}}
-        {{- $imagelist = $imagelist | append $newimage -}}
-      {{- end -}}
     {{- end -}}
 
-  {{- /* Create srcset entries as an array */ -}}
-  {{- $srcset := slice -}}
-  {{- range $i := $imagelist -}}
-    {{- if in $i.RelPermalink "bimage" -}}
-      {{- /* Temp hack to see how missing image is handled */ -}}
-      {{- $srcset = $srcset | append (printf "%sx %dw" $i.RelPermalink $i.Width) -}}
+    {{- /* Create srcset entries as an array */ -}}
+    {{- $srcset := slice -}}
+    {{- range $i := $imagelist -}}
+        {{- if in $i.RelPermalink "bimage" -}}
+            {{- /* Temp hack to see how missing image is handled */ -}}
+            {{- $srcset = $srcset | append (printf "%sx %dw" $i.RelPermalink $i.Width) -}}
+        {{- else -}}
+            {{- /* Add ?w=<width> to image URL to help lightboxSSA work out its true width */ -}}
+            {{- $srcset = $srcset | append (printf "%s?w=%d %dw" $i.RelPermalink $i.Width $i.Width) -}}
+        {{end}}
+    {{- end -}}
+    {{- $srcsetString := "" -}}
+    {{- /* Only include srcset if there is more than one */ -}}
+    {{- if gt (len $imagelist) 1 -}}
+        {{- $srcsetString = (delimit $srcset ", ") -}}
+    {{- end -}}
+    {{- if $debug -}}{{- warnf "figset: imagelist=\"%v\"  srcset=%v  srcsetString=\"%s\"" $imagelist $srcset $srcsetString -}}{{- end -}}
+
+    {{- $lightboxstring := "" -}}
+    {{- if $gallery -}}
+        {{- $lightboxstring = printf "data-lightbox='%s'" $gallery -}}
+    {{- else if $lightbox -}}
+        {{- /* FIXME passing RelPermalink as the gallery name seems a bit weird, but how else to make it unique? */ -}}
+        {{- $lightboxstring = printf "data-lightbox='%s'" $defaultimage.RelPermalink -}}
+    {{- end -}}
+    {{- if $lightboxstring -}}
+        {{- $lightboxstring = printf "%s data-aspect=%f" $lightboxstring $aspect -}}
+        {{- with $url -}}{{- $lightboxstring = printf "%s data-url=%s" $lightboxstring . -}}{{- end -}}
+    {{- end -}}
+    {{- if and $sameheight $lightbox -}}  {{- /* FIXME still need this?  was $height... */ -}}
+        {{- with $srcsetString -}}{{- $lightboxstring = printf "%s data-srcset=\"%s\"" $lightboxstring . -}}{{- end -}}
+    {{- end -}}
+    {{- if $debug -}}{{- warnf "figset: url='%s'  lbstring='%s'" $url $lightboxstring -}}{{- end -}}
+
+    {{- $anchor := "" -}}
+    {{- if and $url (not $lightboxstring) -}}{{- /* Link but no lightbox -- wrap with <a> */ -}}
+            {{- $anchor = printf "<a href=\"%s\">" $url -}}
+            {{- end -}}
+            {{- with $anchor -}}{{- safeHTML . -}}{{- end -}}
+            <figure {{ with $id -}}id="{{ . }}"{{- end -}} class="figset {{ $posclass }} {{ $asclass }} {{ $class1 }} {{ $class2 }}" {{ $lightboxstring | safeHTMLAttr }}>
+                <img loading=lazy class="figset-img"
+                                  {{ with $srcsetString }}srcset="{{ . | safeHTMLAttr }}"
+                                      {{ with $sizesString }}sizes="{{ . | safeHTMLAttr }}"{{ end }}
+                              {{ end }}
+                                  src="{{ $defaultimage.RelPermalink }}" 
+                                  {{ with $alt }}alt="{{ . | safeHTMLAttr }}"{{ end }}
+                                  {{ with $title }}title="{{ . | safeHTMLAttr }}"{{ end }}
+                                  {{ with $imagemargincss }} style="{{ . | safeCSS }}"{{ end }}
+                                                             >
+                                                             {{- if $caption -}}
+                                                                 <figcaption class="figset-caption {{ $capclass }}">{{ safeHTML $caption }}</figcaption>
+                                                             {{- end -}}
+            </figure>
+            {{- if $anchor -}}</a>{{- end -}}
+
     {{- else -}}
-      {{- /* Add ?w=<width> to image URL to help lightboxSSA work out its true width */ -}}
-      {{- $srcset = $srcset | append (printf "%s?w=%d %dw" $i.RelPermalink $i.Width $i.Width) -}}
-    {{end}}
-  {{- end -}}
-  {{- $srcsetString := "" -}}
-  {{- /* Only include srcset if there is more than one */ -}}
-  {{- if gt (len $imagelist) 1 -}}
-    {{- $srcsetString = (delimit $srcset ", ") -}}
-  {{- end -}}
-  {{- if $debug -}}{{- warnf "figset: imagelist=\"%v\"  srcset=%v  srcsetString=\"%s\"" $imagelist $srcset $srcsetString -}}{{- end -}}
+        [image '{{ $name }}' not found]
+    {{- end -}}
 
-  {{- $lightboxstring := "" -}}
-  {{- if $gallery -}}
-    {{- $lightboxstring = printf "data-lightbox='%s'" $gallery -}}
-  {{- else if $lightbox -}}
-    {{- /* FIXME passing RelPermalink as the gallery name seems a bit weird, but how else to make it unique? */ -}}
-    {{- $lightboxstring = printf "data-lightbox='%s'" $defaultimage.RelPermalink -}}
-  {{- end -}}
-  {{- if $lightboxstring -}}
-    {{- $lightboxstring = printf "%s data-aspect=%f" $lightboxstring $aspect -}}
-    {{- with $url -}}{{- $lightboxstring = printf "%s data-url=%s" $lightboxstring . -}}{{- end -}}
-  {{- end -}}
-  {{- if and $sameheight $lightbox -}}  {{- /* FIXME still need this?  was $height... */ -}}
-    {{- with $srcsetString -}}{{- $lightboxstring = printf "%s data-srcset=\"%s\"" $lightboxstring . -}}{{- end -}}
-  {{- end -}}
-  {{- if $debug -}}{{- warnf "figset: url='%s'  lbstring='%s'" $url $lightboxstring -}}{{- end -}}
+    {{- if ne $clear "none" -}}
+        <div style="clear: {{ $clear }};"></div>
+    {{- end -}}
 
-  {{- $anchor := "" -}}
-  {{- if and $url (not $lightboxstring) -}}{{- /* Link but no lightbox -- wrap with <a> */ -}}
-    {{- $anchor = printf "<a href=\"%s\">" $url -}}
-  {{- end -}}
-  {{- with $anchor -}}{{- safeHTML . -}}{{- end -}}
-  <figure {{ with $id -}}id="{{ . }}"{{- end -}} class="figset {{ $posclass }} {{ $asclass }} {{ $class1 }} {{ $class2 }}" {{ $lightboxstring | safeHTMLAttr }}>
-  <img loading=lazy class="figset-img"
-    {{ with $srcsetString }}srcset="{{ . | safeHTMLAttr }}"
-      {{ with $sizesString }}sizes="{{ . | safeHTMLAttr }}"{{ end }}
-    {{ end }}
-    src="{{ $defaultimage.RelPermalink }}" 
-    {{ with $alt }}alt="{{ . | safeHTMLAttr }}"{{ end }}
-    {{ with $title }}title="{{ . | safeHTMLAttr }}"{{ end }}
-    {{ with $imagemargincss }} style="{{ . | safeCSS }}"{{ end }}
-  >
-  {{- if $caption -}}
-  <figcaption class="figset-caption {{ $capclass }}">{{ safeHTML $caption }}</figcaption>
-  {{- end -}}
-  </figure>
-  {{- if $anchor -}}</a>{{- end -}}
-
-{{- else -}}
-[image '{{ $name }}' not found]
-{{- end -}}
-
-{{- if ne $clear "none" -}}
-<div style="clear: {{ $clear }};"></div>
 {{- end -}}

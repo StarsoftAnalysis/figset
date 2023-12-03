@@ -40,10 +40,10 @@
 {{- $p := . -}}
 {{- $figrow := false -}}
 {{- if .Parent -}}
-  {{- if eq .Parent.Name "figrow" -}}
-    {{- $p = .Parent -}}
-    {{- $figrow = true -}}
-  {{- end -}}
+    {{- if eq .Parent.Name "figrow" -}}
+        {{- $p = .Parent -}}
+        {{- $figrow = true -}}
+    {{- end -}}
 {{- end -}}
 {{- $name     := .Get "name"     | default ($p.Get "name")     -}}
 {{- $position := .Get "position" | default ($p.Get "position") -}}
