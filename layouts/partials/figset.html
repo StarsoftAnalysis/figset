@@ -329,7 +329,7 @@ args (in the dict/context):
         {{- else -}}
             {{- /* Add ?w=<width> to image URL to help lightboxSSA work out its true width */ -}}
             {{- $srcset = $srcset | append (printf "%s?w=%d %dw" $i.RelPermalink $i.Width $i.Width) -}}
-        {{end}}
+        {{- end -}}
     {{- end -}}
     {{- $srcsetString := "" -}}
     {{- /* Only include srcset if there is more than one */ -}}
@@ -356,31 +356,31 @@ args (in the dict/context):
 
     {{- $anchor := "" -}}
     {{- if and $url (not $lightboxstring) -}}{{- /* Link but no lightbox -- wrap with <a> */ -}}
-            {{- $anchor = printf "<a href=\"%s\">" $url -}}
-            {{- end -}}
-            {{- with $anchor -}}{{- safeHTML . -}}{{- end -}}
-            <figure {{ with $id -}}id="{{ . }}"{{- end -}} class="figset {{ $posclass }} {{ $asclass }} {{ $class1 }} {{ $class2 }}" {{ $lightboxstring | safeHTMLAttr }}>
-                <img loading=lazy class="figset-img"
-                                  {{ with $srcsetString }}srcset="{{ . | safeHTMLAttr }}"
-                                      {{ with $sizesString }}sizes="{{ . | safeHTMLAttr }}"{{ end }}
-                              {{ end }}
-                                  src="{{ $defaultimage.RelPermalink }}" 
-                                  {{ with $alt }}alt="{{ . | safeHTMLAttr }}"{{ end }}
-                                  {{ with $title }}title="{{ . | safeHTMLAttr }}"{{ end }}
-                                  {{ with $imagemargincss }} style="{{ . | safeCSS }}"{{ end }}
-                                                             >
-                                                             {{- if $caption -}}
-                                                                 <figcaption class="figset-caption {{ $capclass }}">{{ safeHTML $caption }}</figcaption>
-                                                             {{- end -}}
-            </figure>
-            {{- if $anchor -}}</a>{{- end -}}
-
-    {{- else -}}
-        [image '{{ $name }}' not found]
+        {{- $anchor = printf "<a href=\"%s\">" $url -}}
     {{- end -}}
 
-    {{- if ne $clear "none" -}}
-        <div style="clear: {{ $clear }};"></div>
-    {{- end -}}
+    {{- with $anchor -}}{{- safeHTML . -}}{{- end -}}
+    <figure {{ with $id -}}id="{{ . }}"{{- end -}} class="figset {{ $posclass }} {{ $asclass }} {{ $class1 }} {{ $class2 }}" {{ $lightboxstring | safeHTMLAttr }}>
+        <img loading=lazy class="figset-img"
+        {{ with $srcsetString }}srcset="{{ . | safeHTMLAttr }}"
+            {{ with $sizesString }}sizes="{{ . | safeHTMLAttr }}"{{ end }}
+        {{ end }}
+        src="{{ $defaultimage.RelPermalink }}" 
+        {{ with $alt }}alt="{{ . | safeHTMLAttr }}"{{ end }}
+        {{ with $title }}title="{{ . | safeHTMLAttr }}"{{ end }}
+        {{ with $imagemargincss }} style="{{ . | safeCSS }}"{{ end }}
+        >
+        {{- if $caption -}}
+             <figcaption class="figset-caption {{ $capclass }}">{{ safeHTML $caption }}</figcaption>
+        {{- end -}}
+    </figure>
+    {{- if $anchor -}}</a>{{- end -}}
 
+{{- else -}}{{- /* i.e. no $image */ -}}
+    [image '{{ $name }}' not found]
 {{- end -}}
+
+{{- if ne $clear "none" -}}
+    <div style="clear: {{ $clear }};"></div>
+{{- end -}}
+

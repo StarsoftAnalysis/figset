@@ -30,6 +30,18 @@ from page on figsetdev
 PSA
 AVS
 
+## Installation
+
+
+
+You need to invoke the figset CSS somehow.  Either include
+
+  @import "figset.scss";
+
+in your site's CSS, or put this in HTML's <head>:
+
+  <link rel="stylesheet" href="/css/figset.css" type="text/css">
+
 ## Using figset
 
 The 

@@ -1,0 +1,126 @@
+/* Part of figset module */
+div.figrow {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+figure.figset {
+  margin: 0 1em 0.5em;
+  width: fit-content;
+  display: table;
+}
+figure.figset figcaption {
+  display: table-caption;
+  caption-side: bottom;
+}
+figure.figset img, figure.figset video {
+  max-width: 100%;
+  display: table-cell;
+}
+
+div.figrow.figrow-jccenter {
+  justify-content: center;
+}
+div.figrow.figrow-jccenter figcaption.figset-caption {
+  text-align: center;
+}
+
+div.figrow.figrow-jcstart {
+  justify-content: flex-start;
+}
+div.figrow.figrow-jcstart figcaption.figset-caption {
+  text-align: start;
+}
+
+div.figrow.figrow-jcend {
+  justify-content: flex-end;
+}
+div.figrow.figrow-jcend figcaption.figset-caption {
+  text-align: end;
+}
+
+div.figrow.figrow-jcaround {
+  justify-content: space-around;
+}
+div.figrow.figrow-jcaround figcaption.figset-caption {
+  text-align: center;
+}
+
+div.figrow.figrow-jcbetween {
+  justify-content: space-between;
+}
+div.figrow.figrow-jcbetween figcaption.figset-caption {
+  text-align: center;
+}
+
+div.figrow.figrow-jcevenly {
+  justify-content: space-evenly;
+}
+div.figrow.figrow-jcevenly figcaption.figset-caption {
+  text-align: center;
+}
+
+figure.figset.figset-ascenter {
+  align-self: center;
+}
+
+figure.figset.figset-asstretch {
+  align-self: stretch;
+}
+
+figure.figset.figset-asbaseline {
+  align-self: baseline;
+}
+
+figure.figset.figset-asstart {
+  align-self: flex-start;
+}
+
+figure.figset.figset-asend {
+  align-self: flex-end;
+}
+
+figure.figset.figset-posstart {
+  float: left !important;
+  float: inline-start !important;
+  margin-left: 0 !important;
+  margin-inline-start: 0 !important;
+}
+figure.figset.figset-posstart figcaption.figset-caption {
+  text-align: left !important;
+  text-align: start !important;
+}
+
+figure.figset.figset-posend {
+  float: right !important;
+  float: inline-end !important;
+  margin-right: 0 !important;
+  margin-inline-end: 0 !important;
+}
+figure.figset.figset-posend figcaption.figset-caption {
+  text-align: right !important;
+  text-align: end !important;
+}
+
+figure.figset.figset-poscenter {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+figure.figset.figset-poscenter figcaption.figset-caption {
+  text-align: center !important;
+}
+
+/* Classes for testing: */
+.figset-test1 {
+  background: blue;
+  padding: 1em;
+}
+
+.figset-test2 {
+  background: green;
+  padding: 1em;
+}
+
+/*# sourceMappingURL=figset.css.map */
