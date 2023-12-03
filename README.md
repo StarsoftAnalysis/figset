@@ -17,6 +17,8 @@ carousel-type gallery out of some or all of the images on a page.
 
 Images are sized...   adjusted to have the same area
 
+Images are either in the page's resources, or remote or (TODO elsewhere on the site???)
+
 Uses flexbox...
 
 ## Examples
@@ -36,45 +38,162 @@ The
 
 #### name
 
+The name of the image.  It can be a resource belonging to the page, that will be retrieved via Hugo's .Resources.GetMatch function.
+
+example: `name="fred.png"`
+
+This parameter is required for the figset shortcode, but can be replaced by the image parameter if the figset partial is called from another template.
+
+#### image
+
+The image resource to use.  This parameter can only be used when using the figset partial, not the shortcode, when the resource is already known, rather than just its name. 
+
+example: ```
+  {{ $image = .Page.Resources.GetMatch "fred.png" }}
+  {{ partial figset (dict  "site" .Site  "page" .Page  "figrow" true  "image" $image) }} ```
+
+#### position
+
+This parameter applies a class to the figure which affects its horizontal position.
+
+* `left`, `l` -- moves the figure to the left
+* `start`, `s` -- moves the figure the start side (left for LTR text, right for RTL text)
+* `right`, `r` -- moves the figure to the right
+* `end`, `e` -- moves the figure to the end side (right for LTR text, left for RTL text)
+* `center`, `centre`, `c` -- moves the figure to the centre
+
+If the position is not specified, the figure takes the next position in the standard HTML flow.
+
+example: `position=c`
+default: `(none)`
+
+#### size
+
+Specify one of `thumbnail`, `small`, `medium`, `large`, `full`.
+
+Sizes are relative.  What?  Is there a standard area for each size?  Does it depend on screen size?
+
+example: `size=med`
+default: ?
+
+#### maxwidth
+
+The biggest image size, in pixels, to use.  This size will not be exceeded even if the `size` parameter would use a bigger size,
+and also limits the size of the linked image with `url=self`.
+
+example: `maxwidth=800`
+default: ??
+
+#### selfsize
+
+This or maxwidth -- which is use!?!?
+
+#### title
+
+Title text which shows up as the tooltip for the image.
+
+example: `title="Puppy"`
+default?
+
 #### caption
+
+Text that will be displayed below the image using the `figcaption` HTML element.
+
+example: `Bonzo the puppy`
+default: ?
+
+#### alt
+
+Text that describes the contents of the image, for use when the image can't be loaded or can't be seen by the user.
+
+example: `alt="A black labrador pup looks up at the camera"`
+
+#### url
+
+The URL to link to when the user clicks on the image.  If the image has the lightbox or gallery features, the URL will be used on the second click if galleried.  The special value 'self' can be used to link to a full-sized version of the image.  For a remote image (i.e. the `name` parameter starts with `http[s]://`), the link will be to that remote image rather than to a local copy.
+
+If no `url` is given, the image will not be clickable (unless it uses the lightbox feature).
+
+example: `url="https://www.example.com/labradors"` 
+
+#### gallery
+
+A short name for the gallery that is used with the lightbox to enable transitions between images.  The gallery name is only used
+internally, and is not seen by the user.  Typically, all the images on the page, or perhaps all the images within a `figrow` 
+should have the same gallery name.
+
+Any value given for gallery switches on the lightbox mechanism, i.e., `gallery` implies `lightbox`.
+
+example: `gallery=g1`
+default: no gallery
+
+#### lightbox  
+
+Set to true to add the lightbox effect to this image without making it part of a gallery.
+
+example: `lightbox=true`
+default: `false`
+
+#### sameheight
+
+really?
+
+#### sharpen
+
+Set to true to add a mild sharpening effect, using Hugo's [unsharpmask](https://gohugo.io/functions/images/unsharpmask/) function, with values "10 0.5 0.03".
+
+example: `sharpen=true`
+default: `false`
+
+#### debug
+
+Set to true to output debugging information as warnings when Hugo is run; also overlays resized images with size information.
+
+example: `debug=true`
+default: `false`
+
+#### figrow
+
+Set this to true if the `figset` is within a `figrow`.  This is set automatically when using shortcodes, but needs to be set explicitly when using partials (see below).
+example: `figset=true`
+default: `false`
 
 ## Summary of figset parameters
 
 Note that text parameter values must be quoted if they contain spaces or other special characters.  For example, name=pic1.png, name="Picture One.png".
 True/false values and numbers do not need to be quoted.  (true/false --- what will they do if quited?)
 
-| Parameter      | Type |  Description |
-| ----------- | ----------- |
-| name      | text      |
-| caption   | text        |
+TODO keep the table simple -- details above only
 
-    .site       -- site
-    .page       -- current page
-    .figrow     -- true if we're within a figrow (which is independent of whether there's a gallery)
-    .name       -- name of image within the page bundle or as a remote resource (starting with http[s]://)
-    .image      -- (resource) -- image overrides name -- for use by other templates and partials
-    .position   -- left/start, right/end, centre/center -- can be abbreviated.
-    .size       -- thumb, small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
-    .maxwidth   -- biggest size used for srcset in pixels, or for url=self
-    .selfsize   -- max size in px of url=self image
-    .title      -- shows as tool-tip
-    .caption    -- forms the figcaption
-    .alt        -- alt text for img, defaults to title or caption
-    .url        -- url to link to -- on second click if galleried, or 'self'
-    .gallery    -- name of gallery -- just has to be the same on a group of figures to make them a gallery - implies lightbox
-    .lightbox   -- anything truthy to add lightbox effect without making it a gallery
-    .sameheight -- true to make all images with the same .size value the same height 
-    .class1     -- classes from parent figrow
-    .class2     -- classes for this figset
-    .capclass   -- classes for figcaption
-    .id         -- id of this figset
-    .debug      -- true to output debug info as warnings
-    .sharpen    -- true to apply unsharp mask filter; does not affect fall-back non-srcset image
+| Parameter  | Type       | Default | Description |
+| ---------- | ---------- | ------- | ----------- |
+| name       | text       | (none)  | The filename of an image within the page bundle; or the URL of a remote image. |
+| image      | resource   | (none)  | The image to use; this image overrides name. |
+| position   | left/start, right/end, centre/center | ?? | horizontal position of the figure |
+| size       | thumb, small, medium, large, full | ? | Err... |
+| maxwidth   | pixels     | ??      | biggest size used for srcset in pixels, or for url=self |
+| selfsize   | pixels     | ??      | max size in px of url=self image |
+| title      | text       | (none)  | Shows as a tool-tip |
+| caption    | text       | (none)  | Forms the figcaption in the HTML. |
+| alt        | text       | (none)  | Alternative text for the image. |
+| url        | text       | (none)  | The URL to link to when the user clicks on the image. |
+| gallery    | text       | (none)  | The name of the gallery that this image is part of. |
+| lightbox   | true/false | false   | Use a lightbox for this image. |
+| sameheight | true/false | false   | Set to true to make all images with the same `size` value the same height.  Does this work? FIXME |
+| sharpen    | true/false | false   | True to apply a mild unsharp mask filter. |
+| class1     | text       | (none)  | Classes from parent figrow to be applied to the figure HTML element. |
+| class2     | text       | (none)  | Classes specific to this figset to be applied to the figure HTML element. |
+| capclass   | text       | (none)  | Classes for the figcaption HTML element. |
+| id         | text       | (none)  | An HTML id for this figset. |
+| debug      | true/false | false   | Set to true to output debugging information. |
+| figrow     | true/false |         | Set this to true if the figset is within a figrow.
 
 
 
+## Styling
 
-
+Use the class1, class2, and id parameters.
+to override the classes from figset.scss.
 
 
 ## Partials
@@ -99,6 +218,10 @@ more complex example with figrow -- hae to do your own iterating, can't put defa
 
 Remote images: don't forget that Hugo sites are static -- the image will be as retrieved when the site is built, and won't
 change if the source changes until the site is rebuilt.
+
+## Troubleshooting
+
+* If the captions are wonky when using partials, make sure the `figrow` parameter is correctly set.
 
 ## To do
 
