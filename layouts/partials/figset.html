@@ -125,8 +125,8 @@ args (in the dict/context):
     {{- $aspect := div (float $origwidth) (float $origheight) -}}
     {{- $origsize := int (math.Max $origwidth $origheight) -}}
 
-    {{- /* Just a big list, in descending order (so that default size is first, and so that JS (i.e. lightboxSSA) can handle the list easily) */ -}} {{- /* REMOVE -- it's in _imagesize */ -}}
-    {{- $allwidths := slice 3200 2800 2400 2000 1800 1600 1400 1200 1000 800 600 400 200 -}}{{- /* REMOVE -- it's in _imagesize */ -}}
+    {{- /* Just a big list, in descending order (so that default size is first, and so that JS (i.e. lightboxSSA) can handle the list easily) */ -}}
+    {{- $allwidths := slice 3200 2800 2400 2000 1800 1600 1400 1200 1000 800 600 400 200 -}}
     {{- if gt $maxwidth $origwidth -}}{{- $maxwidth = $origwidth -}}{{- end -}}
     {{- if $debug -}}{{- warnf "figset: origw,h=%d,%d aspect=%.2f origsize=%d ssize=%d maxwidth=%d\n" $origwidth $origheight $aspect $origsize $selfsize $maxwidth -}}{{- end -}}
 
@@ -142,10 +142,11 @@ args (in the dict/context):
 
     {{- /* selfsize or maxwidth? */ -}}
     {{- if eq (lower $url) "self" -}}
-        {{- /* Link to the image itself -- but limited by selfsize */ -}}
+        {{- /* Link to the image itself */ -}}
         {{- if $remoteImage -}}
             {{- $url = $name -}}
         {{- else -}}
+            {{- /* limit to selfsize if local */ -}}
             {{- $linkedimage := $image -}}
             {{- if gt $origsize $selfsize -}}
                 {{- if eq $origsize $origwidth -}}
@@ -153,7 +154,6 @@ args (in the dict/context):
                     {{- $linkedimage = $image.Resize (printf "%dx jpg" $selfsize) -}}
                     {{- if $sharpen -}}
                         {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
-                        {{- /* warnf "sharpened 1 %s" $image */ -}}
                     {{- end -}}
                     {{- if $debug -}}
                         {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
@@ -346,7 +346,7 @@ args (in the dict/context):
         {{- $lightboxstring = printf "data-lightbox='%s'" $defaultimage.RelPermalink -}}
     {{- end -}}
     {{- if $lightboxstring -}}
-        {{- $lightboxstring = printf "%s data-aspect=%f" $lightboxstring $aspect -}}
+        {{- /* NOT USED $lightboxstring = printf "%s data-aspect=%f" $lightboxstring $aspect */ -}}
         {{- with $url -}}{{- $lightboxstring = printf "%s data-url=%s" $lightboxstring . -}}{{- end -}}
     {{- end -}}
     {{- if and $sameheight $lightbox -}}  {{- /* FIXME still need this?  was $height... */ -}}

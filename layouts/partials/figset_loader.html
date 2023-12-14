@@ -1,0 +1,55 @@
+{{- /* partials/figset_loader.html */ -}}
+
+{{- /* 
+
+    This partial is designed to be called from the head (or footer?) of a Hugo website
+    page, so that relevant CSS is included.
+    It looks at the page or site parameters to see if figset.active is true,
+    and only outputs the CSS if so.
+
+    Needs to be passed the context:
+
+    {{- partial "figset_loader.html" . -}}
+
+*/ -}}
+
+{{- /* Merge site and page figset params */ -}}
+{{- /* Note that 'figset' is lower-case here, however it's written in the front matter        */ -}}
+{{- /* and that figset.active is the only parameter used here: other are used in figset.html. */ -}}
+{{- $fssite := .Site.Params.figset -}}
+{{- $fspage := .Params.figset -}}
+{{- $fsparams := dict -}}
+{{- if eq (printf "%T" $fssite) "maps.Params" -}}
+    {{- /* site params are valid */ -}}
+    {{- $fsparams = $fssite -}}
+    {{- if eq (printf "%T" $fspage) "maps.Params" -}}
+        {{- /* so are page params */ -}}
+        {{- $fsparams = merge $fsparams $fspage -}}
+    {{- end -}}
+{{- else -}}
+    {{- if eq (printf "%T" $fspage) "maps.Params" -}}
+        {{- /* just page params */ -}}
+        {{- $fsparams = $fspage -}}
+    {{- end -}}
+{{- end -}}
+{{- /* warnf "figset_loader.html: fssite=%v  fspage=%v  fsparams=%v" $fssite $fspage $fsparams */ -}}
+
+{{- /* Only output CSS if figset is marked 'active' for this page */ -}}
+{{- if $fsparams.active -}}
+
+    {{- /* The stylesheet is just plain CSS, but we'll use toCSS to compress it */ -}}
+    {{- $cssoptions := (dict "enableSourceMap" true "outputStyle" "compressed") -}}
+    {{- if .Site.IsServer -}}
+        {{- $cssoptions := (dict "enableSourceMap" true) -}}
+    {{- end -}}
+
+    {{- $figsetcss := resources.Get "css/figset.css" -}}
+    {{- if not $figsetcss -}}
+        {{- errorf "Failed to load figset.css" -}}
+    {{- else -}}
+        {{- /* $css := $figsetcss | resources.ExecuteAsTemplate "css/figset.css" . | toCSS $cssoptions | fingerprint */ -}}
+        {{- $css := $figsetcss | toCSS $cssoptions | fingerprint -}}
+        <link rel="stylesheet" href="{{ $css.RelPermalink }}" type="text/css" integrity="{{ $css.Data.Integrity }}">
+    {{- end -}}
+
+{{- end -}}{{- /* if active */ -}}

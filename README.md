@@ -21,32 +21,48 @@ Images are either in the page's resources, or remote or (TODO elsewhere on the s
 
 Uses flexbox...
 
-## Examples
 
-from page on figsetdev
+## Demo Site
+
+A demonstration site showing examples of the features of figset and lightboxSSA is at:
+
+* [figsetdemo])https://starsoftanalysis.github.io/figsetdemo/gallery/)
 
 ## Sample Sites
 
-PSA
-AVS
+These sites use `figset` extensively:
+
+* [Plotting Shed Art](https://plottingshed.art/)
+* [Avon Valley Shed](https://avonvalleyshed.org.uk/)
 
 ## Installation
 
-
+module or theme...
 
 You need to invoke the figset CSS somehow.  Either include
+```
+@import "figset.scss";
+```
+in your site's SCSS, or put this in HTML's `<head>`:
+```
+<link rel="stylesheet" href="/css/figset.css" type="text/css">
+```
 
-  @import "figset.scss";
-
-in your site's CSS, or put this in HTML's <head>:
-
-  <link rel="stylesheet" href="/css/figset.css" type="text/css">
+or use the provided `figset_loader.html` partial template to include
+the CSS on pages where figset is marked as active.  See 'Options' somewhere here.
 
 ## Using figset
 
-The 
-
+```
 {{<figset name="pic1.png" caption="The first picture" alt="Descriptive text">}}
+```
+
+#### active
+
+Whether or not to include the figset stylesheet on this page (if in the frontmatter) or on 
+every page (if in the configuration).
+
+FIXME this is not an option to use in a shortcode or partial, just in the params.
 
 #### name
 
@@ -66,7 +82,7 @@ example: ```
 
 #### position
 
-This parameter applies a class to the figure which affects its horizontal position.
+This parameter applies a CSS class to the figure which affects its horizontal position.
 
 * `left`, `l` -- moves the figure to the left
 * `start`, `s` -- moves the figure the start side (left for LTR text, right for RTL text)
@@ -74,7 +90,9 @@ This parameter applies a class to the figure which affects its horizontal positi
 * `end`, `e` -- moves the figure to the end side (right for LTR text, left for RTL text)
 * `center`, `centre`, `c` -- moves the figure to the centre
 
-If the position is not specified, the figure takes the next position in the standard HTML flow.
+If the position is not specified, the figure takes the next place in the standard HTML block-level flow.
+
+`position` is ignored when the `figset` is within a `figrow`, because the `figrow` handles the horizontal layout.
 
 example: `position=c`
 default: `(none)`
@@ -205,9 +223,11 @@ TODO keep the table simple -- details above only
 
 ## Styling
 
+The module provides `figset.scss` and also a pre-compiled `figset.css`, which can 
+be integrated into you Hugo site.
+
 Use the class1, class2, and id parameters.
 to override the classes from figset.scss.
-
 
 ## Partials
 
@@ -258,6 +278,10 @@ change if the source changes until the site is rebuilt.
 * DONE move CSS to a separate file to get merged into the rest -- to make for easier tuning of CSS aspects.
 * how to module-ise the head stuff e.g. including lightboxssa where needed etc.
    - and maybe only use figset.scss where needed.
+
+### FIXME
+
+* position default to top -- annoys figrow
 
 ### Done
 
