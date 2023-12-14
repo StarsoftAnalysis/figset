@@ -1,49 +1,14 @@
 {{- /*
-figset partial, version of figure with srcsetting.
 
-TODO:
-* ? maxwidth or maxsize?  -- widths are used vs screen widths / CSS limits...
-* refactor the image filtering
-** Double check thinking re min 1 or 2 in srcset -- is the fallback src in addition to that?
-* option to clear before rather than after?
-* Use separate file for calcs??
-* difference between small and thumb is too much?
-* Still don't know when to use htmlEscape vs safeHTMLAttr -- the former leaves &lt; in title attribute, but not in data-title !?
-* more size options, e.g. 50% (width), 6em, bs4 class... -- but how to scale those for area?
-* decouple from lightboxSSA to allow use of other lightboxes??
-* url/link -- option e.g. url=self to link to selfsize version of same image
-- rename url to link?
-* fix 'null' when hovering over image in carousel
-* allow user to specify hugo's image processing and filtering options.  How will that interact with the resizing that we're doing?  Maybe not the resizing options, then.  Just: rotate (e.g. 'r90' when resizing); output format (jpeg, png, webp); quality;   But wait!  These can be set globally in config.toml -- does the user need per-image settings?
-... overlay (for watermark/logo)
-... see https://gohugo.io/functions/images/#text
-* maxwidth limits e.g. La Alhambra on a wide screen.  think about it -- set a maxarea instead?
-* left/right/start/end for Ltr and RTL scripts -- not well implemented so far.  left gets used as start, and then we don't know which was intended -- perhaps just get rid of left/right
-- but then in CSS, wanting to do float-left when start was asked for...
-- OR, as text-align and float can do start/end, when should keep left separate from start etc.
-- BETTER: keep left/start separate -- class for left can do the clever :dir() thing.  etc.
-* ??? remote images
-* 'jpg' is hard-coded in places here
+partials/figset.html
 
-DONE:
-* if image not found, create a placeholder with various assumptions, e.g. it's square. i.e. use a placeholder image in static or wherever
-* use flex-grow and -shrink ??  NO -- see https://codepen.io/starsoftanalysis/pen/Rwyppdv
-* FIRST: decide how multiple figsets should behave if not within a figrow. -- maybe don't try too hard -- encourage use of figrow.
-- e.g. poses l, c, r  pushes third one to next line.
-* move error handling to shortcodes? -- see https://gohugo.io/templates/shortcode-templates/#error-handling-in-shortcodes
-* Move anchor inside figure
-* 'clear' option for figset (as done for figrow) -- see type2 test.
-* NEXT: don't do flex if no ROW! OR do use a flex div to do the l/r/center!? -- would need another div that the figrow didn't provide.
-* FIXME: mx-auto for non-figrow centred image doesn't work. (e.g. test1)
-* caption alignment -- need to match figrow's justify?   or does figset have a justify too?
-* need left/center/right options for captions -- in figset  and margin:0 auto for image if centred
-* add Hugo's unsharp mask: https://gohugo.io/functions/images/unsharpmask/
-* get defaults from config file
+This is similar to Hugo's built-in 'figure' partial, but uses srcsets
+and has other new features.
 
 This can be used from another template, with args passed in as a dict, e.g.
-{{- partial "figset.html" (dict "page" . "name" "thingy.jpg" "size" "medium" ) -}}
+    {{- partial "figset.html" (dict "page" . "name" "thingy.jpg" "size" "medium" ) -}}
 or via the corresponding shortcode:
-{{< figset name="fred.png" size="medium" >}}
+    {{< figset name="fred.png" size="medium" >}}
 
 The figset shortcode can get all options from a figrow parent (if any).
 
