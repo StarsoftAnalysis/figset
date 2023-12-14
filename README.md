@@ -82,7 +82,7 @@ example: ```
 
 #### position
 
-This parameter applies a CSS class to the figure which affects its horizontal position.
+This parameter applies a class to the figure which affects its horizontal position.
 
 * `left`, `l` -- moves the figure to the left
 * `start`, `s` -- moves the figure the start side (left for LTR text, right for RTL text)
@@ -90,9 +90,7 @@ This parameter applies a CSS class to the figure which affects its horizontal po
 * `end`, `e` -- moves the figure to the end side (right for LTR text, left for RTL text)
 * `center`, `centre`, `c` -- moves the figure to the centre
 
-If the position is not specified, the figure takes the next place in the standard HTML block-level flow.
-
-`position` is ignored when the `figset` is within a `figrow`, because the `figrow` handles the horizontal layout.
+If the position is not specified, the figure takes the next position in the standard HTML flow.
 
 example: `position=c`
 default: `(none)`
@@ -117,7 +115,6 @@ default: ??
 #### selfsize
 
 This or maxwidth -- which is use!?!?
-default: 2000   check
 
 #### title
 
