@@ -39,7 +39,7 @@
 
     {{- /* The stylesheet is just plain CSS, but we'll use toCSS to compress it */ -}}
     {{- $cssoptions := (dict "enableSourceMap" true "outputStyle" "compressed") -}}
-    {{- if .Site.IsServer -}}
+    {{- if hugo.IsServer -}}
         {{- $cssoptions := (dict "enableSourceMap" true) -}}
     {{- end -}}
 
