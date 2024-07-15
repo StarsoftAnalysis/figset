@@ -1,0 +1,50 @@
+{{- /*
+
+figgallery partial
+
+Generates a figrow from all the images in a folder (or other source).
+
+Can be called directly, or via the figgallery shortcode.
+Note that the shortcode can put more things in the dict to be accessed
+from the figset shortcode: this doesn't work when using the partials directly,
+so common values, e.g. gallery or size, have to be in each invocation of figset.
+
+Parameters (in the dict/context):
+  * sort - "date" or "name" or "shuffle"
+  * order - "asc" or "desc", default "asc"
+
+  * justify - values as for CSS's justify-content
+    Accepts these values:
+     center*|centre* start*|left*|flex-start end*|right*|flex-end around*|space-around between*|space-between evenly*|space-evenly
+    where values with an asterisk can be abbreviated as long as they're not ambiguous.
+  * id - CSS id for the figrow div
+  * class -- CSS class(es) for the figrow div
+
+If from another template (rather than via shortcodes), do this: 
+(note use of "figrow true" to tell figset that it's in a row)
+    {{ partial "figrow_start.html" (dict  "site" .Site  "page" .Page  "justify-contents" "center"  "align-items" "top"  "size"  "small"  ...) }}
+    {{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image1.jpg"  "caption" "a photo"  ...)   }}
+    {{ partial "figset.html"       (dict  "site" .Site  "page" .Page  "figrow" true  "gallery" "foo"  "name" "image2.jpg"  "caption" "another photo"  ...) }}
+    {{ partial "figrow_end.html"   (dict  "site" .Site  "page" .Page) }}
+
+*/ -}}
+
+{{ $site := .site }}
+{{ $page := .page }}
+
+{{- $sort := lower .sort | default "shuffle" -}}
+{{- $order := lower .order | default "asc" -}}
+
+{{ $images := $page.Resources.ByType "image" }}
+{{ if eq $sort "shuffle" }}
+    {{ $images = shuffle $images }}
+{{ else }}
+    {{ $images = sort $images $sort $order }}
+{{ end }}
+
+{{ partial "figrow_start.html" (dict  "site" $site  "page" $page  "justify-contents" "center"  "align-items" "center"  ) }}
+{{/* range ($page.Resources.ByType "image") | shuffle */}}
+{{ range $images }}
+    {{ partial "figset.html"       (dict  "site" $site  "page" $page  "figrow" true  "gallery" "foo"  "xname" "image1.jpg"  "image" .  "size" "small" ) }}
+{{ end }}{{/* range */}}
+{{ partial "figrow_end.html"   (dict  "site" $site  "page" $page) }}

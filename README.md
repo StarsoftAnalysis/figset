@@ -13,6 +13,9 @@ Hugo's built-in image processing facilities are used to create the <code>srcset<
 **figset** can use [lightboxSSA](https://github.com/StarsoftAnalysis/lightboxSSA) to create a light box or 
 carousel-type gallery out of some or all of the images on a page.
 
+There is also a **figgallery** shortcode (and partial), which builds a figrow from all the 
+images found in the pages resources.
+
 ## More details
 
 Images are sized...   adjusted to have the same area
@@ -238,7 +241,7 @@ Parameters get passed in as a dict, starting with the current site and page cont
 e.g. {{ partial figset (dict  "site 
 simple figset examplt
 
-more complex example with figrow -- hae to do your own iterating, can't put defaults in the figrow
+TODO: more complex example with figrow -- have to do your own iterating, can't put defaults in the figrow
   DON'T FORGET!!
   * figset needs the site and page context to be passed in, 
   * when using figrow_start partial from another template:

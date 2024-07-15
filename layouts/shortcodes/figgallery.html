@@ -1,0 +1,30 @@
+{{- /* figgallery.html -- shortcode for 
+
+...
+  TODO what about clearing before the row?
+  Parameters: -- see partials/figrow_start.html
+    * justify - values as for CSS's justify-content
+    * clear - if true, adds a clear=both after the figrow.
+    * id
+    * class
+    * figsetclass
+    * debug - set true to output debug information as warnings
+  NOTE Other figset options can be set for figrow and will be used in figset
+  e.g. {{< figrow size=large >}}{{ figset name="x.png" }}{{ figset name="y.jpg" size=small }}...
+  sets size for x.png to large without any work here.  For y.jpg, small will override the setting in figrow.
+  These are obtained in partials/figset.html via e.g. {{ .Parent.Get "size" }}
+
+*/ -}}
+
+{{- /* Get parameters and apply defaults */ -}}
+{{- $justify     := .Get "justify" -}}
+{{- $clear       := .Get "clear" -}}
+{{- $id          := .Get "id" -}}
+{{- $class       := .Get "class" -}}
+{{- $figsetclass := .Get "figsetclass" -}}
+{{- $debug       := .Get "debug" -}}
+
+{{- /* We DON'T need to deal with parameters used by figset via its .Parent -- the shortcode mechanism handles that automatically. */ -}}
+
+{{- partial "figgallery.html" (dict  "site" .Site  "page" .Page ) -}}
+
