@@ -43,11 +43,11 @@
         {{- $cssoptions := (dict "enableSourceMap" true) -}}
     {{- end -}}
 
-    {{- $figsetcss := resources.Get "css/figset.css" -}}
+    {{- $figsetcss := resources.Get "sass/figset.css" -}}
     {{- if not $figsetcss -}}
         {{- errorf "Failed to load figset.css" -}}
     {{- else -}}
-        {{- /* $css := $figsetcss | resources.ExecuteAsTemplate "css/figset.css" . | toCSS $cssoptions | fingerprint */ -}}
+        {{- /* $css := $figsetcss | resources.ExecuteAsTemplate "sass/figset.css" . | toCSS $cssoptions | fingerprint */ -}}
         {{- $css := $figsetcss | toCSS $cssoptions | fingerprint -}}
         <link rel="stylesheet" href="{{ $css.RelPermalink }}" type="text/css" integrity="{{ $css.Data.Integrity }}">
     {{- end -}}

@@ -5,20 +5,14 @@ figgallery partial
 Generates a figrow from all the images in a folder (or other source).
 
 Can be called directly, or via the figgallery shortcode.
-Note that the shortcode can put more things in the dict to be accessed
-from the figset shortcode: this doesn't work when using the partials directly,
-so common values, e.g. gallery or size, have to be in each invocation of figset.
 
 Parameters (in the dict/context):
-  * sort - "date" or "name" or "shuffle"
+  * sort - "none" (default, as they come) or "date" or "name" or "shuffle"
   * order - "asc" or "desc", default "asc"
+  * all other parameters (i.e. everything in context except sort, order, page, site) gets passed to figrow
 
-  * justify - values as for CSS's justify-content
-    Accepts these values:
-     center*|centre* start*|left*|flex-start end*|right*|flex-end around*|space-around between*|space-between evenly*|space-evenly
-    where values with an asterisk can be abbreviated as long as they're not ambiguous.
-  * id - CSS id for the figrow div
-  * class -- CSS class(es) for the figrow div
+TODO
+  * get caption/title/alt from EXIF -- use options to chose which EXIF field
 
 If from another template (rather than via shortcodes), do this: 
 (note use of "figrow true" to tell figset that it's in a row)
@@ -32,19 +26,34 @@ If from another template (rather than via shortcodes), do this:
 {{ $site := .site }}
 {{ $page := .page }}
 
-{{- $sort := lower .sort | default "shuffle" -}}
+{{- $sort := lower .sort | default "none" -}}
 {{- $order := lower .order | default "asc" -}}
 
 {{ $images := $page.Resources.ByType "image" }}
-{{ if eq $sort "shuffle" }}
+{{ if eq $sort "none" }}
+    {{ warnf "fgp: no sort" }}
+    {{- /* no sorting required */ -}}
+{{ else if eq $sort "shuffle" }}
+    {{ warnf "fgp: shuffling" }}
     {{ $images = shuffle $images }}
-{{ else }}
-    {{ $images = sort $images $sort $order }}
+{{ else if eq $sort "name" }}
+    {{ warnf "fgp: sorting %v %v" $sort $order }}
+    {{ $images = sort $images ".Name" $order }}
+{{ else if eq $sort "date" }}
+    {{ warnf "fgp: sorting %v %v" $sort $order }}
+    {{ $images = sort $images ".Exif.Date" $order }}    {{/* why doesn't this work?? */}}
 {{ end }}
+{{ warnf "@@@ figgallery: dot=%v  images=%v" . $images }}
 
-{{ partial "figrow_start.html" (dict  "site" $site  "page" $page  "justify-contents" "center"  "align-items" "center"  ) }}
+{{ $figrowdict := . }}
+{{ $figsetdict := merge . (dict "figrow" true ) }}  
+{{ warnf "@@@ figgallery: figrowdict=%v   figsetdict=%v" $figrowdict $figsetdict }}
+
+{{/* partial "figrow_start.html" (dict  "site" $site  "page" $page  "justify-contents" "center"  "align-items" "center"  ) */}}
+{{ partial "figrow_start.html" $figrowdict }}
 {{/* range ($page.Resources.ByType "image") | shuffle */}}
 {{ range $images }}
-    {{ partial "figset.html"       (dict  "site" $site  "page" $page  "figrow" true  "gallery" "foo"  "xname" "image1.jpg"  "image" .  "size" "small" ) }}
+    {{/* partial "figset.html"       (dict  "site" $site  "page" $page  "figrow" true  "gallery" "foo"  "xname" "image1.jpg"  "image" .  "size" "small" ) */}}
+    {{ partial "figset.html" (merge $figsetdict  (dict "image" . )) }}
 {{ end }}{{/* range */}}
-{{ partial "figrow_end.html"   (dict  "site" $site  "page" $page) }}
+{{ partial "figrow_end.html" $figrowdict }}

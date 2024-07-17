@@ -1,30 +1,17 @@
-{{- /* figgallery.html -- shortcode for 
+{{- /* figgallery.html -- shortcode for figgallery partial
 
-...
-  TODO what about clearing before the row?
-  Parameters: -- see partials/figrow_start.html
-    * justify - values as for CSS's justify-content
-    * clear - if true, adds a clear=both after the figrow.
-    * id
-    * class
-    * figsetclass
-    * debug - set true to output debug information as warnings
-  NOTE Other figset options can be set for figrow and will be used in figset
-  e.g. {{< figrow size=large >}}{{ figset name="x.png" }}{{ figset name="y.jpg" size=small }}...
-  sets size for x.png to large without any work here.  For y.jpg, small will override the setting in figrow.
-  These are obtained in partials/figset.html via e.g. {{ .Parent.Get "size" }}
+Note that no validation is done here -- all params are sent to the partial.
 
 */ -}}
 
-{{- /* Get parameters and apply defaults */ -}}
-{{- $justify     := .Get "justify" -}}
-{{- $clear       := .Get "clear" -}}
-{{- $id          := .Get "id" -}}
-{{- $class       := .Get "class" -}}
-{{- $figsetclass := .Get "figsetclass" -}}
-{{- $debug       := .Get "debug" -}}
-
-{{- /* We DON'T need to deal with parameters used by figset via its .Parent -- the shortcode mechanism handles that automatically. */ -}}
-
-{{- partial "figgallery.html" (dict  "site" .Site  "page" .Page ) -}}
+{{/* warnf "fg shortcode: .Params=%v" .Params */}}
+{{/* Create a dict with all this shortcode's params, plus .Site and .Page */}}
+{{/* .Params is something like map[align:center size:small] */}}
+{{ $dict := (dict  "site" .Site  "page" .Page) }}
+{{ range $k, $v := .Params }}
+    {{/* warnf "param: %v - %v" $k $v */}}
+    {{ $dict = merge $dict (dict $k $v) }}
+{{ end }}
+{{/* warnf "dict = %v" $dict */}}
+{{- partial "figgallery.html" $dict -}}
 

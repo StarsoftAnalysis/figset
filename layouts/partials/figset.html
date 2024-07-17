@@ -14,6 +14,8 @@ The figset shortcode can get all options from a figrow parent (if any).
 
 # TODO:
 - use resources.getremote (https://gohugo.io/functions/resources/getremote/) for remote images
+- caption=filename and similar things (e.g. extracting description from EXIF etc.)
+- debug: add filename as well as resolution
 
 args (in the dict/context):
 .site       -- site
@@ -21,7 +23,7 @@ args (in the dict/context):
 .figrow     -- true if we're within a figrow (which is independent of whether there's a gallery)
 .name       -- name of image within the page bundle or as a remote resource (starting with http[s]://)
 .image      -- (resource) -- image overrides name -- for use by other templates and partials
-.position   -- left/start, right/end, centre/center -- can be abbreviated.
+.position   -- left/start, right/end, centre/center -- can be abbreviated.   IGNORED within a figrow
 .size       -- thumb, small, medium, large, full  TODO other sizes  FIXME hook into bootstrap sizing
 .maxwidth   -- biggest size used for srcset in pixels
 .selfsize   -- max size in px of url=self image
@@ -50,6 +52,7 @@ args (in the dict/context):
 {{- $remoteImage := false -}}
 {{- if isset . "image" -}}
     {{- $image = .image -}}
+    {{- $name = .image.Name -}}
 {{- else -}}
     {{- $namelower := strings.ToLower $name -}}
     {{- if or (strings.HasPrefix $namelower "https://") (strings.HasPrefix $namelower "http://") -}}
@@ -84,8 +87,8 @@ args (in the dict/context):
 {{- $debug := .debug | default site.Params.figset.debug | default false -}}
 {{- $sharpen := .sharpen | default .site.Params.figset.sharpen | default false -}}
 
-{{- if $debug -}}{{- warnf "figset: i=%v p=%s s=%s t=%s c=%s u=%s a=%s g=%s l=%v sh=%t fr=%t" $image $position $size $title $caption $url $alt $gallery $lightbox $sameheight $figrow -}}{{- end -}}
-{{- if $debug -}}{{- warnf "figset: .page=%s  name=%s image=%v\n" .page.Page $name $image -}}{{- end -}}
+{{- if $debug -}}{{- warnf "\n\n\n ***************************** figset: i=%v p=%s s=%s t=%s c=%s u=%s a=%s g=%s l=%v sh=%t fr=%t" $image $position $size $title $caption $url $alt $gallery $lightbox $sameheight $figrow -}}{{- end -}}
+{{- if $debug -}}{{- warnf "figset: dot=%v  name=%v image=%v\n" . $name $image -}}{{- end -}}
 
 {{- if $image -}}
     {{- $origwidth := $image.Width -}}
@@ -124,7 +127,8 @@ args (in the dict/context):
                         {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
                     {{- end -}}
                     {{- if $debug -}}
-                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text $name (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
                     {{- end -}}
                 {{- else -}}
                     {{- /* portrait image */ -}}
@@ -134,7 +138,8 @@ args (in the dict/context):
                         {{- /* warnf "sharpened 2 %s" $image */ -}}
                     {{- end -}}
                     {{- if $debug -}}
-                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text $name (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
                     {{- end -}}
                 {{- end -}}
             {{- end -}}
@@ -263,7 +268,8 @@ args (in the dict/context):
             {{- /* warnf "sharpened 3 %s" $image */ -}}
         {{- end -}}
         {{- if $debug -}}
-            {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+            {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
+            {{- $newimage = $newimage.Filter (images.Text $name (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
             {{- warnf "starting imagelist with resized %s" $newimage.RelPermalink -}}
         {{- end -}}
         {{- /* put limited-to-maxwidth image at start of list */ -}}
@@ -281,7 +287,8 @@ args (in the dict/context):
                 {{- /* warnf "sharpened 4 %s" $image */ -}}
             {{- end -}}
             {{- if $debug -}}
-                {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
+                {{- $newimage = $newimage.Filter (images.Text $name (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
                 {{- warnf "adding to imagelist %s" $newimage.RelPermalink -}}
             {{- end -}}
             {{- $imagelist = $imagelist | append $newimage -}}
