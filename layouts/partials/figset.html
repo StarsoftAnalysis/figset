@@ -109,7 +109,7 @@ args (in the dict/context):
     {{- $imagemargincss := "" -}}
     {{- $sizes := "" -}}
     {{- $sizesString := "" -}}  
-    {{- $unsharpMaskFilter := images.UnsharpMask 10.0 0.5 0.03 -}}
+    {{- /* $unsharpMaskFilter := images.UnsharpMask 10.0 0.5 0.03 */ -}}
 
     {{- /* selfsize or maxwidth? */ -}}
     {{- if eq (lower $url) "self" -}}
@@ -120,28 +120,33 @@ args (in the dict/context):
             {{- /* limit to selfsize if local */ -}}
             {{- $linkedimage := $image -}}
             {{- if gt $origsize $selfsize -}}
+                {{- $linkedimage = partial "figset_transform.html" (dict "image" $linkedimage "name" $name "sharpen" $sharpen "size" $selfsize "colour" "#00ff00" "orientation" "l" "debug" $debug) -}} 
+                {{/*
                 {{- if eq $origsize $origwidth -}}
-                    {{- /* landscape image */ -}}
+                    {{- /* landscape image * -}}
                     {{- $linkedimage = $image.Resize (printf "%dx jpg" $selfsize) -}}
                     {{- if $sharpen -}}
                         {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
                     {{- end -}}
                     {{- if $debug -}}
-                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
-                        {{- $linkedimage = $linkedimage.Filter (images.Text $name (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                        {{- /* $linkedimage = $linkedimage.Filter (images.Text (printf "resized %dx jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text $name (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) * -}}
+                        {{- $linkedimage = partial "figset_transform.html" (dict "image" $linkedimage "name" $name "selfsize" $selfsize "colour" "#00ff00" "orientation" "l") -}} 
                     {{- end -}}
                 {{- else -}}
-                    {{- /* portrait image */ -}}
+                    {{- /* portrait image * -}}
                     {{- $linkedimage = $image.Resize (printf "x%d jpg" $selfsize) -}}
                     {{- if $sharpen -}}
                         {{- $linkedimage = $linkedimage.Filter ($unsharpMaskFilter) -}}
-                        {{- /* warnf "sharpened 2 %s" $image */ -}}
+                        {{- /* warnf "sharpened 2 %s" $image * -}}
                     {{- end -}}
                     {{- if $debug -}}
-                        {{- $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
-                        {{- $linkedimage = $linkedimage.Filter (images.Text $name (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+                        {{- /* $linkedimage = $linkedimage.Filter (images.Text (printf "resized x%d jpg" $selfsize) (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
+                        {{- $linkedimage = $linkedimage.Filter (images.Text $name (dict "color" "#00ff00" "size" 20 "linespacing" 2 "x" 10 "y" 10)) * -}}
+                        {{- $linkedimage = partial figset_annotate (dict "image" $linkedimage "name" $name "selfsize" $selfsize "colour" "#00ff00" "orientation" "p") -}} 
                     {{- end -}}
                 {{- end -}}
+                */}}
             {{- end -}}
             {{- $url = $linkedimage.RelPermalink -}}
         {{- end -}}
@@ -262,16 +267,19 @@ args (in the dict/context):
         {{- $defaultwidth = $origwidth -}}
         {{- if $debug -}}{{- warnf "starting imagelist with orig %s" $image.RelPermalink -}}{{- end -}}
     {{- else -}}
+        {{- $newimage := partial "figset_transform.html" (dict "image" $image "name" $name "sharpen" $sharpen "size" $maxwidth "colour" "ff0000" "orientation" "l" "debug" $debug) -}} 
+        {{/*
         {{- $newimage := $image.Resize (printf "%dx jpg" $maxwidth) -}}
         {{- if $sharpen -}}
             {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
-            {{- /* warnf "sharpened 3 %s" $image */ -}}
+            {{- /* warnf "sharpened 3 %s" $image * -}}
         {{- end -}}
         {{- if $debug -}}
             {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $maxwidth) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
             {{- $newimage = $newimage.Filter (images.Text $name (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
             {{- warnf "starting imagelist with resized %s" $newimage.RelPermalink -}}
         {{- end -}}
+        */}}
         {{- /* put limited-to-maxwidth image at start of list */ -}}
         {{- $imagelist = $imagelist | append $newimage -}}
         {{- $defaultimage = $newimage -}}
@@ -281,16 +289,19 @@ args (in the dict/context):
     {{- range $w := $allwidths -}}
         {{- if and (le $w $maxwidth) (ne $w $defaultwidth) -}}
             {{- if $debug -}}{{- warnf "figset: maxwidth=%v w=%v appending after resize %dx" $maxwidth $w $w -}}{{- end -}}
+            {{- $newimage := partial "figset_transform.html" (dict "image" $image "name" $name "sharpen" $sharpen "size" $w "colour" "ff0000" "orientation" "l" "debug" $debug) -}} 
+            {{/*
             {{- $newimage := $image.Resize (printf "%dx jpg" $w) -}}
             {{- if $sharpen -}}
                 {{- $newimage = $newimage.Filter ($unsharpMaskFilter) -}}
-                {{- /* warnf "sharpened 4 %s" $image */ -}}
+                {{- /* warnf "sharpened 4 %s" $image * -}}
             {{- end -}}
             {{- if $debug -}}
                 {{- $newimage = $newimage.Filter (images.Text (printf "resized %dx jpg" $w) (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 30)) -}}
                 {{- $newimage = $newimage.Filter (images.Text $name (dict "color" "#ff0000" "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
                 {{- warnf "adding to imagelist %s" $newimage.RelPermalink -}}
             {{- end -}}
+            */}}
             {{- $imagelist = $imagelist | append $newimage -}}
         {{- end -}}
     {{- end -}}

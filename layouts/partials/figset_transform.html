@@ -1,0 +1,35 @@
+{{- /*
+
+figset_transform.html -- partial that transforms (and annotates) an image.
+
+TODO: calculate font size as percentage of image size
+
+Expects a dict containing:
+
+  .image
+  .name
+  .sharpen -- true to apply sharpening
+  .orientation -- "l" or "p"
+  .size
+  .colour - hexcode e.g. "#00ff00"
+  .debug
+
+Note no format specifier -- leave the format unchanged.
+
+Returns the updated image.
+
+*/ -}}
+
+{{- $resize := cond (eq .orientation "l") "%dx" "x%d" }}
+{{- $newimage := .image.Resize (printf $resize .size) -}}
+{{- if .sharpen -}}
+    {{- $unsharpMaskFilter := images.UnsharpMask 10.0 0.5 0.03 -}}
+    {{- $newimage = $newimage.Filter $unsharpMaskFilter -}}
+{{- end -}}
+
+{{- if .debug -}}
+    {{- $fmt := cond (eq .orientation "l") "%s\nresized %dx" "%s\nresized x%d" }}
+    {{- $newimage = $newimage.Filter (images.Text (printf $fmt .name .size) (dict "color" .colour "size" 20 "linespacing" 2 "x" 10 "y" 10)) -}}
+{{- end -}}
+
+{{- return $newimage -}}

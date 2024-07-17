@@ -40,8 +40,8 @@ If from another template (rather than via shortcodes), do this:
     {{ warnf "fgp: sorting %v %v" $sort $order }}
     {{ $images = sort $images ".Name" $order }}
 {{ else if eq $sort "date" }}
-    {{ warnf "fgp: sorting %v %v" $sort $order }}
-    {{ $images = sort $images ".Exif.Date" $order }}    {{/* why doesn't this work?? */}}
+    {{ warnf "fgp: NOT DONE sorting %v %v" $sort $order }}
+    {{/* $images = sort $images ".Exif.Date" $order }}    {{/* why doesn't this work?? */}}
 {{ end }}
 {{ warnf "@@@ figgallery: dot=%v  images=%v" . $images }}
 
