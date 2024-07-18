@@ -13,6 +13,8 @@ Parameters (in the dict/context):
 
 TODO
   * get caption/title/alt from EXIF -- use options to chose which EXIF field
+    NOTE Exif data only available from JPG or TIFF files until new Exif code in Hugo is available. See https://github.com/gohugoio/hugo/pull/12651
+    So we'll forget about EXIF stuff until that's fixed.
 
 If from another template (rather than via shortcodes), do this: 
 (note use of "figrow true" to tell figset that it's in a row)
@@ -25,35 +27,63 @@ If from another template (rather than via shortcodes), do this:
 
 {{ $site := .site }}
 {{ $page := .page }}
+{{ $debug := .debug }}
 
 {{- $sort := lower .sort | default "none" -}}
 {{- $order := lower .order | default "asc" -}}
+{{ if $debug }}{{ warnf "figgallery: dot = %v" . }}{{ end }}
 
 {{ $images := $page.Resources.ByType "image" }}
+{{ $ExifOK := true }}
+{{ range $i,$image := $images }}
+    {{ if $debug }}{{ warnf "%v: image=%v  Exif=%#v" $i $image $image.Exif }}{{ end }}
+    {{/* range $x := $image }}
+        {{ warnf "%v - %v" $image $x }}
+    {{ end */}}
+    {{ if eq $image.Exif nil }}
+        {{ $ExifOK = false }}
+        {{ if $debug }}{{ warnf "figgallery: no Exif data for %v" $image }}{{ end }}{{/* TODO only show warning if wanting to sort by an Exif field */}}
+    {{ end }}
+{{ end }}
 {{ if eq $sort "none" }}
-    {{ warnf "fgp: no sort" }}
+    {{ if $debug }}{{ warnf "fgp: no sort" }}{{ end }}
     {{- /* no sorting required */ -}}
 {{ else if eq $sort "shuffle" }}
-    {{ warnf "fgp: shuffling" }}
+    {{ if $debug }}{{ warnf "fgp: shuffling" }}{{ end }}
     {{ $images = shuffle $images }}
 {{ else if eq $sort "name" }}
-    {{ warnf "fgp: sorting %v %v" $sort $order }}
+    {{ if $debug }}{{ warnf "fgp: sorting %v %v" $sort $order }}{{ end }}
     {{ $images = sort $images ".Name" $order }}
-{{ else if eq $sort "date" }}
-    {{ warnf "fgp: NOT DONE sorting %v %v" $sort $order }}
-    {{/* $images = sort $images ".Exif.Date" $order }}    {{/* why doesn't this work?? */}}
+{{ else if and $ExifOK (eq $sort "date") }}  {{/* If no Exif, can't sort */}}
+    {{ if $debug }}{{ warnf "fgp: sorting %v %v" $sort $order }}{{ end }}
+    {{ $images = sort $images "Exif.Date" $order }}
 {{ end }}
-{{ warnf "@@@ figgallery: dot=%v  images=%v" . $images }}
+{{ if $debug }}{{ warnf "@@@ figgallery: dot=%v  images=%v" . $images }}{{ end }}
 
 {{ $figrowdict := . }}
 {{ $figsetdict := merge . (dict "figrow" true ) }}  
-{{ warnf "@@@ figgallery: figrowdict=%v   figsetdict=%v" $figrowdict $figsetdict }}
+{{ if $debug }}{{ warnf "@@@ figgallery: figrowdict=%v   figsetdict=%v" $figrowdict $figsetdict }}{{ end }}
 
 {{/* partial "figrow_start.html" (dict  "site" $site  "page" $page  "justify-contents" "center"  "align-items" "center"  ) */}}
 {{ partial "figrow_start.html" $figrowdict }}
 {{/* range ($page.Resources.ByType "image") | shuffle */}}
 {{ range $images }}
     {{/* partial "figset.html"       (dict  "site" $site  "page" $page  "figrow" true  "gallery" "foo"  "xname" "image1.jpg"  "image" .  "size" "small" ) */}}
+    {{ if ne .Exif nil }}
+        {{/* merge in Exif details (but don't override values already there) */}}
+        {{ if $debug }}{{ warnf "image %#v   tags %#v" . .Exif.Tags }}{{ end }}
+        {{ $desc := "" }}
+        {{ if isset .Exif.Tags "ImageDescription" }}
+            {{ $desc = .Exif.Tags.ImageDescription }}
+        {{ end }}
+        {{ $title := "" }}
+        {{ if isset .Exif.Tags "ImageTitle" }}
+            {{ $title := .Exif.Tags.ImageTitle }}
+        {{ end }}
+        {{ $exifdict := (dict "caption" $desc "title" $title) }}
+        {{ if $debug }}{{ warnf "fgg adding to %v to %v" $exifdict $figsetdict }}{{ end }}
+        {{ $figsetdict = merge $exifdict $figsetdict }}
+    {{ end }}
     {{ partial "figset.html" (merge $figsetdict  (dict "image" . )) }}
 {{ end }}{{/* range */}}
 {{ partial "figrow_end.html" $figrowdict }}

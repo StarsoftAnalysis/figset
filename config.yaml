@@ -3,4 +3,5 @@
 module:
   hugoVersion:
     # Need at least 64 for ?
+    # Will soon need a later version for EXIF stuff
     min: "0.64.0"
