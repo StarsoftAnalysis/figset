@@ -1,5 +1,5 @@
-[!NOTE]
-This repository has been moved to [CodeBerg](https://codeberg.org/StarsoftAnalysis/figset).  No further versions will be published here.
+> [!NOTE]
+> This repository has been moved to [CodeBerg](https://codeberg.org/StarsoftAnalysis/figset).  No further versions will be published here.
 
 # figset
 
