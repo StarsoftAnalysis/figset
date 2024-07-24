@@ -1,3 +1,6 @@
+[!NOTE]
+This repository has been moved to [CodeBerg](https://codeberg.org/StarsoftAnalysis/figset).  No further versions will be published here.
+
 # figset
 
 **figset**, and its friend **figrow**, are [Hugo](https://gohugo.io/) [shortcodes](https://gohugo.io/content-management/shortcodes/) 
